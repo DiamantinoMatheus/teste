@@ -75,12 +75,7 @@ try {
                     </div>
                     <div class="form-group foto">
                         <input type="text" id="codigo" name="codigo" placeholder="Digite seu ID aqui" 
-                            value="' . (isset($codigo) ? htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') : '') . '" 
-                            required 
-                            pattern="\d{10}" 
-                            title="Digite um ID de exatamente 10 dígitos e apenas números." 
-                            oninput="validarID(this);" 
-                            maxlength="10">
+                            value="' . (isset($codigo) ? htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') : '') . '"  >
                         <span id="codigo-error" style="color: red; display: none;">O ID deve ter exatamente 10 dígitos.</span>
                     </div>
 
