@@ -1,0 +1,165 @@
+/* Variáveis CSS */
+:root {
+    --button-bg: #ffffff;
+    --button-bg-hover: rgba(0, 0, 0, 0.24);
+    --button-shadow-hover: rgba(0, 0, 0, 0.19);
+    --button-color: #000000;
+    --button-border-color: #ffffff;
+    --text-color: #ffffff;
+    --navbar-bg: #000000;
+    --navbar-img-hover-scale: 1.2;
+    --card-border: #ddd;
+    --card-bg: #ffffff;
+    --table-bg: #f2f2f2;
+    --table-alt-row-bg: #f9f9f9;
+    --font-size-small: 0.8em;
+    --font-size-normal: 1em;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: var(--navbar-bg);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+
+.barra {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.link {
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.navbar-nav{
+    color: white;
+    text-decoration: none;
+}
+
+.nav-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Botões */
+.button-option,
+.button,
+.button-option1,
+.button1 {
+    border: none;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    border-radius: 10px;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: inline-block;
+    background-color: var(--button-bg);
+}
+
+.button-option,
+.button {
+    color: var(--button-color);
+}
+
+.button {
+    border: 1px solid var(--button-border-color);
+    background-color: var(--button-bg);
+}
+
+.button-option1,
+.button1 {
+    color: var(--text-color);
+}
+
+.button1 {
+    background-color: var(--button-color);
+}
+
+.button-option:hover,
+.button:hover,
+.button-option1:hover,
+.button1:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 16px 0 var(--button-bg-hover), 0 17px 50px 0 var(--button-shadow-hover);
+}
+
+/* Imagens */
+.navbar img {
+    height: 50px;
+    max-width: 100%;
+    transition: transform 0.3s;
+}
+
+.navbar img:hover {
+    transform: scale(var(--navbar-img-hover-scale));
+}
+
+/* Títulos e Conteúdo */
+main h1 {
+    margin: 30px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.conteudo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+/* Tabelas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th,
+td {
+    border: 1px solid var(--card-border);
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: var(--table-bg);
+}
+
+tbody tr:nth-child(even) {
+    background-color: var(--table-alt-row-bg);
+}
+
+/* Responsividade */
+@media only screen and (max-width: 768px) {
+    .barra {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-list {
+        margin-top: 10px;
+    }
+
+    .button-option,
+    .button {
+        font-size: var(--font-size-small);
+    }
+}
+
+.button1:hover{
+    color: white;
+    text-decoration: none;
+}
