@@ -58,20 +58,20 @@ try {
                 <form id="formulario2" class="form" method="POST" action="../Dashboard/processamento/insert_dados-esportes.php" enctype="multipart/form-data" onsubmit="handleSubmit()">
                     <input type="hidden" name="csrf_token" value="' . htmlspecialchars($csrf_token, ENT_QUOTES, 'UTF-8') . '">
                     <input type="hidden" name="id" value="' . (isset($id) ? htmlspecialchars($id, ENT_QUOTES, 'UTF-8') : '') . '">
-        
+                    
                     <div class="form-group">
-                        <input type="text" name="nome" id="nome" placeholder="Informe seu nome" value="' . (isset($nome) ? htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') : '') . '" required pattern="[A-Za-z\s]+" title="Digite apenas letras e espaços.">
+                        <input type="text" name="nome" id="nome" placeholder="Informe seu nome" 
+                            value="' . (isset($nome) ? htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') : '') . '" 
+                            required pattern="[A-Za-z\s]+" title="Digite apenas letras e espaços.">
                     </div>
-        
+
                     <div class="form-group">
                         <input type="text" id="cpf" name="cpf" placeholder="Informe seu CPF" 
-                        value="' . (isset($cpf) ? htmlspecialchars($cpf, ENT_QUOTES, 'UTF-8') : '') . '" 
-                        required 
-                        oninput="mascaraCPF(this)" 
-                        maxlength="14" 
-                        pattern="\d{3}\.\d{3}\.\d{3}-\d{2}">
+                            value="' . (isset($cpf) ? htmlspecialchars($cpf, ENT_QUOTES, 'UTF-8') : '') . '" 
+                            required oninput="mascaraCPF(this)" 
+                            maxlength="14" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}">
                     </div>
-        
+
                     <div class="form-group">
                         <h4>Real Madrid x Villareal</h4>
                         <input type="text" id="villareal" name="villareal" placeholder="Exemplo placar X:X" 
@@ -90,7 +90,7 @@ try {
                             value="' . (isset($palmeiras) ? htmlspecialchars($palmeiras, ENT_QUOTES, 'UTF-8') : '') . '" 
                             oninput="mascaraPlacar(this)" maxlength="3" pattern="\d:\d">
                     </div>
-        
+
                     <h1>ID DA SUA CONTA REALS - <strong class="regras"><em>SOMENTE OS NÚMEROS, NÃO COLOCAR "ID#"</em></strong></h1>
                     <p>Acesse "MENU" ➜ "CARTEIRA/PERFIL" ➜ DIGITE <strong><em>SOMENTE OS NÚMEROS</em></strong> DA ID QUE APARECER</p>
                     <div class="imagens">

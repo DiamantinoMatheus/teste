@@ -76,7 +76,21 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// Função para bloquear os caracteres < e >
+function bloquearSimbolos(event) {
+    // Remove qualquer ocorrência dos caracteres < e >
+    event.target.value = event.target.value.replace(/[<>]/g, '');
+}
+
+// Seleciona todos os inputs de texto
+const inputsTexto = document.querySelectorAll('input[type="text"]');
+
+// Adiciona o evento de input para cada campo
+inputsTexto.forEach(function(input) {
+    input.addEventListener('input', bloquearSimbolos);
+});
+
 document.getElementById('codigo').addEventListener('input', function(e) {
-    // Substitui os caracteres < e > por uma string vazia
-    this.value = this.value.replace(/[<>]/g, '');
+    // Remove qualquer letra e mantém apenas números
+    this.value = this.value.replace(/[a-zA-Z]/g, '');
 });
