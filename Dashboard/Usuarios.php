@@ -15,6 +15,7 @@ try {
     // Consulta SQL para contar os eventos de ambas as tabelas
     $sqlGiros = "SELECT COUNT(id) FROM giros";
     $sqlPremiacao = "SELECT COUNT(id) FROM premiacao";
+    $sqlEsportes = "SELECT COUNT(id) FROM esportes";
 
     // Executar as consultas
     $stmtGiros = $conn->prepare($sqlGiros);
@@ -24,6 +25,10 @@ try {
     $stmtPremiacao = $conn->prepare($sqlPremiacao);
     $stmtPremiacao->execute();
     $premiacaoCount = $stmtPremiacao->fetchColumn();
+
+    $stmtEsportes = $conn->prepare($sqlEsportes);
+    $stmtEsportes->execute();
+    $EsportesCount = $stmtEsportes->fetchColumn();
 } catch (PDOException $e) {
     echo "Erro ao recuperar eventos: " . $e->getMessage();
 } finally {
@@ -83,6 +88,7 @@ try {
                 <div class="mb-3">
                     <p>Quantidade de IDs na tabela "giros": <strong><?php echo $giroCount; ?></strong></p>
                     <p>Quantidade de IDs na tabela "premiacao": <strong><?php echo $premiacaoCount; ?></strong></p>
+                    <p>Quantidade de IDs na tabela "esportes": <strong><?php echo $EsportesCount; ?></strong></p>
                 </div>
                 <div class="button-container">
                     <form method="post" action="../Dashboard/processamento/exportar_giros.php">
@@ -90,6 +96,9 @@ try {
                     </form>
                     <form method="post" action="../Dashboard/processamento/exportar_premiacao.php">
                         <button name="exportar" value="premiacao" class="btn">Exportar Premiação</button>
+                    </form>
+                    <form method="post" action="../Dashboard/processamento/exportar_esportes.php">
+                        <button name="exportar" value="esportes" class="btn">Exportar Esportes</button>
                     </form>
                 </div>
             </div>
