@@ -1,0 +1,338 @@
+/* Navbar */
+.navbar {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    /* Adicionado um pouco de padding para melhor espaçamento em telas menores */
+}
+
+.button-container {
+    display: flex;
+    gap: 10px; /* Espaçamento entre os botões */
+    justify-content: center; /* Centraliza os botões */
+}
+
+.button-container button{
+    background-color: #7CFCAF;
+    transition: 1s;
+}
+
+.button-container button:hover{
+    background-color: #5ac083;
+    transform: scale(1.1);
+}
+
+.barra {
+    display: flex;
+    justify-content: space-between;
+    /* Alinhamento dos itens à esquerda e à direita */
+    align-items: center;
+    width: 100%;
+    /* Ocupa toda a largura disponível */
+}
+
+.resultado-container {
+    display: flex;
+    /* Configura o container para usar flexbox */
+    flex-wrap: wrap;
+    /* Permite que os itens se movam para a linha seguinte se não houver espaço suficiente */
+    gap: 20px;
+    /* Espaçamento entre os itens */
+    justify-content: center;
+    /* Centraliza os itens horizontalmente */
+    padding: 20px;
+    /* Espaçamento interno ao redor dos itens */
+}
+
+.resultado-container ul {
+    margin: 0;
+    /* Remove a margem padrão do ul */
+    padding: 0;
+    /* Remove o padding padrão do ul */
+    list-style-type: none;
+    /* Remove as bolinhas ou números padrão dos itens da lista */
+    display: flex;
+    /* Configura o ul para usar flexbox */
+    flex-wrap: wrap;
+    /* Permite que os itens se movam para a linha seguinte se não houver espaço suficiente */
+    gap: 20px;
+    /* Espaçamento entre os itens */
+    justify-content: center;
+    /* Centraliza os itens horizontalmente */
+    padding: 0;
+    /* Remove o padding do ul */
+}
+
+.resultado-container li {
+    background: #ffffff;
+    /* Cor de fundo branca */
+    border: 1px solid #dcdcdc;
+    /* Borda cinza clara */
+    border-radius: 8px;
+    /* Bordas arredondadas */
+    padding: 15px;
+    /* Espaçamento interno */
+    font-size: 16px;
+    /* Tamanho da fonte */
+    font-weight: 500;
+    /* Peso da fonte */
+    color: #333333;
+    /* Cor do texto */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Sombra leve */
+    width: 200px;
+    /* Largura do item */
+    text-align: center;
+    /* Alinhamento do texto */
+    transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+    /* Transições suaves */
+    list-style-type: none;
+    /* Remove as bolinhas padrão da lista */
+    display: flex;
+    /* Configura o item da lista como um item flexível */
+    align-items: center;
+    /* Alinha o conteúdo verticalmente ao centro */
+    justify-content: center;
+    /* Centraliza o conteúdo horizontalmente */
+}
+
+
+.resultado-container li:hover {
+    background: #f0f0f0;
+    /* Cor de fundo ao passar o mouse */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Aumento da sombra ao passar o mouse */
+    transform: translateY(-3px);
+    /* Efeito de leve elevação */
+}
+
+.resultado-container li:nth-child(odd) {
+    background: #f9f9f9;
+    /* Cor de fundo alternada para itens ímpares */
+}
+
+
+.nav-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    /* Espaçamento entre os itens de navegação */
+}
+
+/* Estilos de hover para os botões */
+.button-option:hover,
+.button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+/* Estilos de hover para os botões */
+.button-option1:hover,
+.button1:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.button-option,
+.button {
+    border: none;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    border-radius: 10px;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    transition: 1s;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    display: inline-block;
+}
+
+.button {
+    border: white 1px solid;
+    background-color: white;
+    color: black;
+}
+
+.button-option1,
+.button1 {
+    border: none;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    border-radius: 10px;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    transition: 1s;
+    background-color: rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
+    display: inline-block;
+}
+
+.button1 {
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+}
+
+.navbar img {
+    width: auto;
+    height: 50px;
+    max-width: 100%;
+    transition: 1s;
+}
+
+.navbar img:hover {
+    transform: scale(1.1);
+}
+
+.card-container {
+    transition: 2s;
+}
+
+.card-container:hover {
+    transform: scale(1.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+main h1 {
+    margin: 30px;
+}
+
+.conteudo {
+    display: flex;
+    position: relative;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Adicionada media query para ajustar o layout em telas menores */
+@media only screen and (max-width: 768px) {
+    .barra {
+        flex-direction: column;
+        align-items: flex-start;
+        /* Alinha os itens à esquerda em telas menores */
+    }
+
+    .nav-list {
+        margin-top: 10px;
+        /* Adiciona um espaço entre a barra e a lista de navegação em telas menores */
+    }
+
+    .button-option,
+    .button {
+        font-size: 0.8em;
+        /* Reduz o tamanho da fonte em telas menores */
+    }
+}
+
+.titulo {
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    color: black;
+    text-decoration-line: overline;
+    text-decoration-color: black;
+}
+
+.btn_envio {
+    border: none;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    border-radius: 10px;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    transition: 1s;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    display: inline-block;
+    margin-bottom: 70px;
+}
+
+.btn_envio:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.titulo2 {
+    color: black;
+    text-decoration-line: overline;
+    text-decoration-color: black;
+    margin: 10px;
+    font-size: 40px;
+    font-weight: bold;
+    margin-top: 30px;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.card-img-top {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-text {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+.btn-primary {
+    margin-top: 1rem;
+}
+
+.modal-lg {
+    max-width: 80%;
+}
+
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Estilos para o botão de sorteio */
+.sortear-button {
+    background: #7CFCAF;
+    /* Cor sólida para o botão */
+    color: #ffffff;
+    /* Cor do texto */
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    /* Espaçamento interno */
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Sombra leve para profundidade */
+    margin: 20px auto;
+    /* Espaço ao redor do botão e centralizado horizontalmente */
+    display: block;
+    /* Garantir que o botão fique em linha própria */
+}
+
+.sortear-button:hover {
+    background: #2f9c5c;
+    /* Cor mais escura para o hover */
+    transform: scale(1.05);
+    /* Leve aumento de tamanho */
+}
