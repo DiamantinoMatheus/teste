@@ -20,8 +20,10 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Consulta para selecionar os dados da tabela 'esportes'
-    $sql = "SELECT nome_completo, cpf, id_conta_reals, placar_exato_rm_villareal,
-    placar_exato_bahia_flamengo, placar_exato_rb_braga_palmeiras FROM esportes"; // Ajuste a tabela conforme necessário
+    $sql ="SELECT nome_completo, cpf, id_conta_reals, placar_exato_rm_villareal,
+        placar_exato_bahia_flamengo, placar_exato_rb_braga_palmeiras, 
+        DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at 
+        FROM esportes";// Ajuste a tabela conforme necessário
     $stmt = $conn->prepare($sql);
     $stmt->execute();
 
@@ -36,7 +38,7 @@ try {
     fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
     // Escreve o cabeçalho do CSV
-    fputcsv($output, ['Nome', 'CPF', 'ID Reals', 'placar_exato_rm_villareal', 'placar_exato_bahia_flamengo', 'placar_exato_rb_braga_palmeiras'], ';'); // Usando ponto e vírgula como delimitador
+    fputcsv($output, ['Nome', 'CPF', 'ID Reals', 'placar_exato_rm_villareal', 'placar_exato_bahia_flamengo', 'placar_exato_rb_braga_palmeiras', 'Data/Hora'], ';'); // Usando ponto e vírgula como delimitador
 
     // Escreve os dados no CSV
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {

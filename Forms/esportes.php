@@ -76,19 +76,19 @@ try {
                         <h4> Real Madrid x Villareal - 05/10</h4>
                         <input type="text" id="villareal" name="villareal" placeholder="Placar exato - Exemplo placar 2x5" 
                             value="' . (isset($villareal) ? htmlspecialchars($villareal, ENT_QUOTES, 'UTF-8') : '') . '" 
-                            oninput="mascaraPlacar(this)" maxlength="3" pattern="\dx\d">
+                        oninput="mascaraPlacar(this)" maxlength="3" pattern="\d+x\d+" required>
                     </div>
                     <div class="form-group">
                         <h4>Bahia x Flamengo - 05/10</h4>
                         <input type="text" id="bahia" name="bahia" placeholder="Placar exato - Exemplo placar 3x1" 
                             value="' . (isset($bahia) ? htmlspecialchars($bahia, ENT_QUOTES, 'UTF-8') : '') . '" 
-                            oninput="mascaraPlacar(this)" maxlength="3" pattern="\dx\d">
+                            oninput="mascaraPlacar(this)" maxlength="3" pattern="\d+x\d+" required>
                     </div>
                     <div class="form-group">
                         <h4>RB Bragantino x Palmeiras - 05/10</h4>
                         <input type="text" id="palmeiras" name="palmeiras" placeholder="Placar exato - Exemplo placar 4x4" 
                             value="' . (isset($palmeiras) ? htmlspecialchars($palmeiras, ENT_QUOTES, 'UTF-8') : '') . '" 
-                            oninput="mascaraPlacar(this)" maxlength="3" pattern="\dx\d">
+                            oninput="mascaraPlacar(this)" maxlength="3" pattern="\d+x\d+" required>
                     </div>
 
                     <h1>ID DA SUA CONTA REALS - <strong class="regras"><em>SOMENTE OS NÚMEROS, NÃO COLOCAR "ID#"</em></strong></h1>
@@ -218,7 +218,7 @@ try {
 
                 // Limita a quantidade de dígitos a 5 (2 dígitos, 1 'x' e 2 dígitos)
                 if (input.value.length > 5) {
-                    input.value = input.value.slice(0, 5);
+                    input.value = input.value.slice(0, 3);
                 }
 
                 // Garante que tenha apenas um "x"
@@ -227,7 +227,7 @@ try {
                 }
 
                 // Adiciona 'x' entre os dois números se ainda não houver
-                if (input.value.length === 3 && !input.value.includes('x')) {
+                if (input.value.length === 2 && !input.value.includes('x')) {
                     input.value = input.value.replace(/(\d{1})(\d{1})/, "$1x$2");
                 }
             }
