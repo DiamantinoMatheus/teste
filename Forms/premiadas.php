@@ -102,7 +102,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="https://static.pl-01.cdn-platform.com/themes/1.1.7/reals.bet/icons/favicon.ico">
-    <link rel="stylesheet" href="../Dashboard/css/style.css">
+    <link rel="stylesheet" href="../Dashboard/css/styles.css">
     <title>Formulário - Reals</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -178,7 +178,7 @@ try {
                 });
             });
         </script>
-        <script src="comands.js"></script>
+        <script src="comandos.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6/jquery.inputmask.min.js"></script>
 
