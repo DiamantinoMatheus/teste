@@ -88,6 +88,8 @@ const inputsTexto = document.querySelectorAll('input[type="text"]');
 // Adiciona o evento de input para cada campo
 inputsTexto.forEach(function(input) {
     input.addEventListener('input', bloquearSimbolos);
+    input.addEventListener('email', bloquearSimbolos);
+    input.addEventListener('tel', bloquearSimbolos);
 });
 
 document.getElementById('codigo').addEventListener('input', function(e) {
