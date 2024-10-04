@@ -6,7 +6,7 @@ try {
     $pdo->exec("DELETE FROM giros");
     
     // Redirecionar de volta com uma mensagem de sucesso
-    header("Location: ../dash.php?message=Todos os usuários foram deletados com sucesso.");
+    header("Location: ../Usuarios.php?message=Todos os usuários foram deletados com sucesso.");
     exit;
 } catch (PDOException $e) {
     // Redirecionar com uma mensagem de erro

@@ -180,12 +180,12 @@ require_once "../Dashboard/processamento/Auth.php";
 
 
 
-        <div class="row">
+        <div class="row d-flex justify-content-left">
             <!-- Card para Lives -->
-            <div class="col-md-4 mb-4 card-container">
+            <div class="col-md-12 mb-4 card-container ">
                 <div class="card">
                     <div class="card-body ">
-                        <i class="fas fa-video fa-2x mb-2"></i>
+                        <i class="bi bi-clipboard-pulse fa-2x mb-2"></i>
                         <h5 class="card-title">Formulários</h5>
                         <!-- Container flexível para os botões -->
                         <div class="button-container">
@@ -294,161 +294,85 @@ require_once "../Dashboard/processamento/Auth.php";
                 setupFormListeners(); // Chama a função para configurar os ouvintes
             </script>
 
+            
 
 
-            <!-- Card para Admin -->
-            <div class="col-md-4 mb-4 card-container">
-                <div class="card">
-                    <div class="card-body">
-                        <i class="fas fa-user-cog fa-2x mb-2"></i>
-                        <h5 class="card-title">Sorteados</h5>
-                        <div class="d-flex justify-content-between">
-                            <a href="./processamento/delete_users_giros.php" class="btn-danger btn" onclick="return confirm('Você tem certeza que deseja deletar todos os usuários? Esta ação não pode ser desfeita!');">
-                                <i class="fas fa-trash-alt"></i> Limpar Giros
-                            </a>
-                            <a href="./processamento/delete_users_premiacao.php" class="btn btn-danger" onclick="return confirm('Você tem certeza que deseja deletar todos os usuários? Esta ação não pode ser desfeita!');">
-                                <i class="fas fa-trash-alt"></i> Limpar Premiação
-                            </a>
-                        </div>
-                        <div class="d-flex justify-content-between mt-2">
-                            <a href="./processamento/delete_users_esportes.php" class="btn-danger btn" onclick="return confirm('Você tem certeza que deseja deletar todos os usuários? Esta ação não pode ser desfeita!');">
-                                <i class="fas fa-trash-alt"></i> Limpar Esportes
-                            </a>
-                        </div>
-                    </div>
+            <div class="container mt-5">
+                <h2 class="mb-4 titulo">Adicionar Evento</h2>
+                <div class="form-group">
+                    <label for="tipoFormulario" class="mb-3">Selecione o tipo de formulário:</label>
+                    <select id="tipoFormulario" class="form-control" onchange="mostrarFormulario(this.value)">
+                        <option value="">Escolha...</option>
+                        <option value="giro">Formulário de Giro</option>
+                        <option value="premiacao">Formulário de Premiação</option>
+                        <option value="esportes">Formulário de Esportes</option>
+                    </select>
                 </div>
             </div>
 
-
-
-            <!-- Card para Outro -->
-            <div class="col-md-4 mb-4 card-container">
-                <div class="card">
-                    <div class="card-body" class="icons">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
-                            class="bi bi-person-fill-add" viewBox="0 0 16 16">
-                            <path
-                                d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                            <path
-                                d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4" />
-                        </svg>
-                        <h5 class="card-title">Registrar Usuário</h5>
-                        <button type="button" class="button-option" data-bs-toggle="modal"
-                            data-bs-target="#registroModal" style="margin-bottom: 4px;">
-                            Ver Mais
-                        </button>
-
+            <div id="formularioGiro" style="display: none; margin-top: 20px;">
+                <form action="./processamento/adicionar_evento_giros.php" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3 mt-3">
+                        <label for="imagemGiro" class="form-label">Banner:</label>
+                        <input type="file" class="form-control" id="imagemGiro" name="banner" accept="image/*" required>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal de Registro -->
-        <div class="modal fade" id="registroModal" tabindex="-1" aria-labelledby="registroModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="registroModalLabel">Registro de Usuário</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="mb-3">
+                        <label for="tituloGiro" class="form-label">Título:</label>
+                        <input type="text" class="form-control" id="tituloGiro" name="titulo" required>
                     </div>
-                    <div class="modal-body">
-                        <!-- Formulário de Registro -->
-                        <form action="processamento/registro.php" method="post">
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email:</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="senha" class="form-label">Senha:</label>
-                                <input type="password" class="form-control" id="senha" name="senha" required>
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" class="button-option">Registrar</button>
-                            </div>
-                        </form>
-                        <!-- Fim do Formulário de Registro -->
+                    <div class="mb-3">
+                        <label for="imagemGiro" class="form-label">Imagem:</label>
+                        <input type="file" class="form-control" id="imagemGiro" name="imagem" accept="image/*" required>
                     </div>
-                </div>
+                    <button type="submit" class="btn_envio">Adicionar Evento de Giro</button>
+                </form>
             </div>
-        </div>
 
-        <div class="container mt-5">
-            <h2 class="mb-4 titulo">Adicionar Evento</h2>
-            <div class="form-group">
-                <label for="tipoFormulario" class="mb-3">Selecione o tipo de formulário:</label>
-                <select id="tipoFormulario" class="form-control" onchange="mostrarFormulario(this.value)">
-                    <option value="">Escolha...</option>
-                    <option value="giro">Formulário de Giro</option>
-                    <option value="premiacao">Formulário de Premiação</option>
-                    <option value="esportes">Formulário de Esportes</option>
-                </select>
+            <div id="formularioPremiacao" style="display: none; margin-top: 20px;">
+                <form action="./processamento/adicionar_evento_premios.php" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="imagemPremiacao" class="form-label">Banner:</label>
+                        <input type="file" class="form-control" id="imagemPremiacao" name="banner" accept="image/*" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tituloPremiacao" class="form-label">Título:</label>
+                        <input type="text" class="form-control" id="tituloPremiacao" name="titulo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagemPremiacao" class="form-label">Imagem:</label>
+                        <input type="file" class="form-control" id="imagemPremiacao" name="imagem" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn_envio">Adicionar Evento de Premiação</button>
+                </form>
             </div>
-        </div>
 
-        <div id="formularioGiro" style="display: none; margin-top: 20px;">
-            <form action="./processamento/adicionar_evento_giros.php" method="POST" enctype="multipart/form-data">
-                <div class="mb-3 mt-3">
-                    <label for="imagemGiro" class="form-label">Banner:</label>
-                    <input type="file" class="form-control" id="imagemGiro" name="banner" accept="image/*" required>
-                </div>
-                <div class="mb-3">
-                    <label for="tituloGiro" class="form-label">Título:</label>
-                    <input type="text" class="form-control" id="tituloGiro" name="titulo" required>
-                </div>
-                <div class="mb-3">
-                    <label for="imagemGiro" class="form-label">Imagem:</label>
-                    <input type="file" class="form-control" id="imagemGiro" name="imagem" accept="image/*" required>
-                </div>
-                <button type="submit" class="btn_envio">Adicionar Evento de Giro</button>
-            </form>
-        </div>
+            <div id="formularioEsportes" style="display: none; margin-top: 20px;">
+                <form action="./processamento/adicionar_evento_esportes.php" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="imagemEsportes" class="form-label">Banner:</label>
+                        <input type="file" class="form-control" id="imagemEsportes" name="banner" accept="image/*" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tituloPremiacao" class="form-label">Título:</label>
+                        <input type="text" class="form-control" id="tituloPremiacao" name="titulo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagemEsportes" class="form-label">Imagem:</label>
+                        <input type="file" class="form-control" id="imagemEsportes" name="imagem" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn_envio">Adicionar Evento de Esportes</button>
+                </form>
+            </div>
 
-        <div id="formularioPremiacao" style="display: none; margin-top: 20px;">
-            <form action="./processamento/adicionar_evento_premios.php" method="POST" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="imagemPremiacao" class="form-label">Banner:</label>
-                    <input type="file" class="form-control" id="imagemPremiacao" name="banner" accept="image/*" required>
-                </div>
-                <div class="mb-3">
-                    <label for="tituloPremiacao" class="form-label">Título:</label>
-                    <input type="text" class="form-control" id="tituloPremiacao" name="titulo" required>
-                </div>
-                <div class="mb-3">
-                    <label for="imagemPremiacao" class="form-label">Imagem:</label>
-                    <input type="file" class="form-control" id="imagemPremiacao" name="imagem" accept="image/*" required>
-                </div>
-                <button type="submit" class="btn_envio">Adicionar Evento de Premiação</button>
-            </form>
-        </div>
+            <?php
+            require_once '../back-php/conexao.php'; // Inclua o arquivo de conexão
 
-        <div id="formularioEsportes" style="display: none; margin-top: 20px;">
-            <form action="./processamento/adicionar_evento_esportes.php" method="POST" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="imagemEsportes" class="form-label">Banner:</label>
-                    <input type="file" class="form-control" id="imagemEsportes" name="banner" accept="image/*" required>
-                </div>
-                <div class="mb-3">
-                    <label for="tituloPremiacao" class="form-label">Título:</label>
-                    <input type="text" class="form-control" id="tituloPremiacao" name="titulo" required>
-                </div>
-                <div class="mb-3">
-                    <label for="imagemEsportes" class="form-label">Imagem:</label>
-                    <input type="file" class="form-control" id="imagemEsportes" name="imagem" accept="image/*" required>
-                </div>
-                <button type="submit" class="btn_envio">Adicionar Evento de Esportes</button>
-            </form>
-        </div>
+            try {
+                $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password);
+                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        <?php
-        require_once '../back-php/conexao.php'; // Inclua o arquivo de conexão
-
-        try {
-            $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            // Consulta SQL para recuperar eventos de todas as tabelas
-            $sql = "
+                // Consulta SQL para recuperar eventos de todas as tabelas
+                $sql = "
         SELECT id, titulo, imagem, banner, 'premiacao' AS tipo FROM eventos_premiacao
         UNION ALL
         SELECT id, titulo, imagem, banner, 'giros' AS tipo FROM eventos_giros
@@ -456,102 +380,102 @@ require_once "../Dashboard/processamento/Auth.php";
         SELECT id, titulo, imagem, banner, 'esportes' AS tipo FROM eventos_esportes
     ";
 
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            echo "Erro ao recuperar eventos: " . $e->getMessage();
-        } finally {
-            $conn = null;
-        }
-        ?>
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } catch (PDOException $e) {
+                echo "Erro ao recuperar eventos: " . $e->getMessage();
+            } finally {
+                $conn = null;
+            }
+            ?>
 
 
-        <div class="container">
-            <h3 class="titulo mt-4 mb-4">Listagem de Eventos</h3>
+            <div class="container">
+                <h3 class="titulo mt-4 mb-4">Listagem de Eventos</h3>
 
-            <div class="row">
-                <?php if (!empty($eventos)) : ?>
-                    <?php foreach ($eventos as $evento) : ?>
-                        <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
-                            <div class="card">
-                                <!-- Exibição do Banner -->
-                                <?php if (!empty($evento['banner'])) : ?>
-                                    <img src="data:image/jpeg;base64,<?php echo base64_encode($evento['banner']); ?>" class="card-img-top" alt="Banner do Evento">
-                                <?php endif; ?>
+                <div class="row">
+                    <?php if (!empty($eventos)) : ?>
+                        <?php foreach ($eventos as $evento) : ?>
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
+                                <div class="card">
+                                    <!-- Exibição do Banner -->
+                                    <?php if (!empty($evento['banner'])) : ?>
+                                        <img src="data:image/jpeg;base64,<?php echo base64_encode($evento['banner']); ?>" class="card-img-top" alt="Banner do Evento">
+                                    <?php endif; ?>
 
-                                <div class="card-body">
-                                    <h5 class="card-title" style="text-align: center;"> <?php echo $evento['titulo']; ?>
-                                    </h5>
-                                    <p>REGRAS:<br>
-                                        - Estar inscrito no CANAL do TELEGRAM;<br>
-                                        - Seguir a REALS no INSTAGRAM;<br>
-                                        - Preencher o formulário abaixo CORRETAMENTE;<br>
-                                        - Caso não esteja cumprindo as 3 regras, NÃO RECEBERÁ AS PREMIAÇÕES.<br>
+                                    <div class="card-body">
+                                        <h5 class="card-title" style="text-align: center;"> <?php echo $evento['titulo']; ?>
+                                        </h5>
+                                        <p>REGRAS:<br>
+                                            - Estar inscrito no CANAL do TELEGRAM;<br>
+                                            - Seguir a REALS no INSTAGRAM;<br>
+                                            - Preencher o formulário abaixo CORRETAMENTE;<br>
+                                            - Caso não esteja cumprindo as 3 regras, NÃO RECEBERÁ AS PREMIAÇÕES.<br>
 
-                                        <br><br>
-                                        Preencha somente UMA ÚNICA VEZ o formulário com seus DADOS CORRETOS utilizados na REALS BET.
-                                        Caso não tenha conta na Reals Bet, CADASTRE-SE AQUI!
-                                    </p>
-                                    <!-- Exibição da Imagem do Evento -->
-                                    <div class="conteudo">
-                                        <?php if (!empty($evento['imagem'])) : ?>
-                                            <img src="data:image/jpeg;base64,<?php echo base64_encode($evento['imagem']); ?>" class="img-thumbnail" alt="Imagem do Evento">
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="d-flex gap-2 mt-3 justify-content-center">
-                                        <!-- Botão para abrir o modal de Editar -->
-                                        <button type="button" class="button-option delete-button" data-bs-toggle="modal" data-bs-target="#editModal<?php echo htmlspecialchars($evento['id']); ?>">
-                                            <i class="bi bi-pencil-fill"></i>
-                                        </button>
+                                            <br><br>
+                                            Preencha somente UMA ÚNICA VEZ o formulário com seus DADOS CORRETOS utilizados na REALS BET.
+                                            Caso não tenha conta na Reals Bet, CADASTRE-SE AQUI!
+                                        </p>
+                                        <!-- Exibição da Imagem do Evento -->
+                                        <div class="conteudo">
+                                            <?php if (!empty($evento['imagem'])) : ?>
+                                                <img src="data:image/jpeg;base64,<?php echo base64_encode($evento['imagem']); ?>" class="img-thumbnail" alt="Imagem do Evento">
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="d-flex gap-2 mt-3 justify-content-center">
+                                            <!-- Botão para abrir o modal de Editar -->
+                                            <button type="button" class="button-option delete-button" data-bs-toggle="modal" data-bs-target="#editModal<?php echo htmlspecialchars($evento['id']); ?>">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
 
-                                    </div>
+                                        </div>
 
-                                    <!-- Modal de Editar -->
-                                    <div class="modal fade" id="editModal<?php echo $evento['id']; ?>" tabindex="-1" aria-labelledby="editModalLabel<?php echo $evento['id']; ?>" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="editModalLabel<?php echo $evento['id']; ?>">Editar Evento</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form action="./processamento/editar_evento.php" method="POST" enctype="multipart/form-data">
-                                                        <div class="mb-3">
-                                                            <label for="titulo<?php echo $evento['id']; ?>" class="form-label">Título:</label>
-                                                            <input type="text" class="form-control" id="titulo<?php echo $evento['id']; ?>" name="titulo" value="<?php echo htmlspecialchars($evento['titulo']); ?>" required>
-                                                            <input type="hidden" name="id" value="<?php echo $evento['id']; ?>">
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="banner<?php echo $evento['id']; ?>" class="form-label">Banner:</label>
-                                                            <input type="file" class="form-control" id="banner<?php echo $evento['id']; ?>" name="banner">
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="imagem<?php echo $evento['id']; ?>" class="form-label">Imagem:</label>
-                                                            <input type="file" class="form-control" id="imagem<?php echo $evento['id']; ?>" name="imagem">
-                                                        </div>
+                                        <!-- Modal de Editar -->
+                                        <div class="modal fade" id="editModal<?php echo $evento['id']; ?>" tabindex="-1" aria-labelledby="editModalLabel<?php echo $evento['id']; ?>" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editModalLabel<?php echo $evento['id']; ?>">Editar Evento</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="./processamento/editar_evento.php" method="POST" enctype="multipart/form-data">
+                                                            <div class="mb-3">
+                                                                <label for="titulo<?php echo $evento['id']; ?>" class="form-label">Título:</label>
+                                                                <input type="text" class="form-control" id="titulo<?php echo $evento['id']; ?>" name="titulo" value="<?php echo htmlspecialchars($evento['titulo']); ?>" required>
+                                                                <input type="hidden" name="id" value="<?php echo $evento['id']; ?>">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="banner<?php echo $evento['id']; ?>" class="form-label">Banner:</label>
+                                                                <input type="file" class="form-control" id="banner<?php echo $evento['id']; ?>" name="banner">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="imagem<?php echo $evento['id']; ?>" class="form-label">Imagem:</label>
+                                                                <input type="file" class="form-control" id="imagem<?php echo $evento['id']; ?>" name="imagem">
+                                                            </div>
 
-                                                        <div class="modal-footer">
-                                                            <button type="submit" class="button-delete button-option">Salvar Mudanças</button>
-                                                        </div>
-                                                    </form>
+                                                            <div class="modal-footer">
+                                                                <button type="submit" class="button-delete button-option">Salvar Mudanças</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php else : ?>
-                    <p class="text-center">Nenhum evento encontrado.</p>
-                <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <p class="text-center">Nenhum evento encontrado.</p>
+                    <?php endif; ?>
+                </div>
             </div>
-        </div>
 
 
 
-        </form>
+            </form>
         </div>
         <!-- Agenda Form Fim -->
 

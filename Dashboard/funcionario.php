@@ -81,7 +81,48 @@ if (!isset($_SESSION['email'])) {
 
 
     <main class="container">
-        <h1 class="titulo">Usuário</h1>
+        <div style="display: flex; align-items: center;" class="justify-content-between">
+            <h1 class="titulo" style="margin-right: 10px;">Usuário</h1>
+            <!-- Botão para Registrar Usuário -->
+            <button type="button" class="button-option" data-bs-toggle="modal" data-bs-target="#registroModal" style="display: flex; align-items: center; padding: 8px 12px; border: none; background: none; cursor: pointer;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-fill-add" viewBox="0 0 16 16">
+                    <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                    <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4" />
+                </svg>
+                <span style="margin-left: 8px;">Registrar Usuário</span>
+            </button>
+        </div>
+
+
+        <!-- Modal de Registro -->
+        <div class="modal fade" id="registroModal" tabindex="-1" aria-labelledby="registroModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="registroModalLabel">Registro de Usuário</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Formulário de Registro -->
+                        <form action="processamento/registro.php" method="post">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email:</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="senha" class="form-label">Senha:</label>
+                                <input type="password" class="form-control" id="senha" name="senha" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="button-option">Registrar</button>
+                            </div>
+                        </form>
+                        <!-- Fim do Formulário de Registro -->
+                    </div>
+                </div>
+            </div>
+        </div>
         <?php
         // Continue com o restante do código
         include '../back-php/conexao.php';

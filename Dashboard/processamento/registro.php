@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['email'], $_POST['senha
             // Verificar se a consulta foi executada com sucesso
             if ($stmt->execute()) {
                 echo "Usuário cadastrado com sucesso!";
-                header("Location: ../dash.php");
+                header("Location: ../funcionario.php");
                 exit();
             } else {
                 echo "Erro ao cadastrar o usuário: " . print_r($stmt->errorInfo(), true);
