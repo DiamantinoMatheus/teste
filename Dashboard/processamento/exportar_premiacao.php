@@ -20,7 +20,7 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Consulta para selecionar os dados da tabela 'premiacao'
-    $sql = "SELECT nome, email, codigo, whatsapp FROM premiacao"; // Ajuste a tabela conforme necessário
+    $sql = "SELECT nome, email, codigo, whatsapp, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at FROM premiacao"; // Ajuste a tabela conforme necessário
     $stmt = $conn->prepare($sql);
     $stmt->execute();
 
@@ -35,7 +35,7 @@ try {
     fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
     // Escreve o cabeçalho do CSV
-    fputcsv($output, ['Nome', 'Email', 'Codigo', 'WhatsApp'], ';'); // Usando ponto e vírgula como delimitador
+    fputcsv($output, ['Nome', 'Email', 'Codigo', 'WhatsApp', 'Data/Hora'], ';'); // Usando ponto e vírgula como delimitador
 
     // Escreve os dados no CSV
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {

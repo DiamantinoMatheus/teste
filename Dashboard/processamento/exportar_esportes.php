@@ -20,10 +20,10 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Consulta para selecionar os dados da tabela 'esportes'
-    $sql ="SELECT nome_completo, cpf, id_conta_reals, placar_exato_rm_villareal,
+    $sql = "SELECT nome_completo, cpf, id_conta_reals, placar_exato_rm_villareal,
         placar_exato_bahia_flamengo, placar_exato_rb_braga_palmeiras, 
         DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at 
-        FROM esportes";// Ajuste a tabela conforme necessário
+        FROM esportes"; // Ajuste a tabela conforme necessário
     $stmt = $conn->prepare($sql);
     $stmt->execute();
 
