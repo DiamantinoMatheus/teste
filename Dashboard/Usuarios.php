@@ -46,7 +46,7 @@ try {
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorteio de Registros</title>
-    <link rel="stylesheet" href="css/excel.css">
+    <link rel="stylesheet" href="css/users.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -86,57 +86,59 @@ try {
             <div class="card-header">
                 <h5 class="mb-0">Exportar Dados</h5>
             </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <p>Quantidade de IDs na tabela "giros": <strong><?php echo $giroCount; ?></strong></p>
-                    <p>Quantidade de IDs na tabela "premiacao": <strong><?php echo $premiacaoCount; ?></strong></p>
-                    <p>Quantidade de IDs na tabela "esportes": <strong><?php echo $EsportesCount; ?></strong></p>
-                </div>
-                <div class="button-container d-flex justify-content-around">
-                    <form method="post" action="../Dashboard/processamento/exportar_giros.php">
-                        <button name="exportar" value="giros" class="btn">Exportar Giros</button>
-                    </form>
-                    <form method="post" action="../Dashboard/processamento/exportar_premiacao.php">
-                        <button name="exportar" value="premiacao" class="btn">Exportar Premiação</button>
-                    </form>
-                    <form method="post" action="../Dashboard/processamento/exportar_esportes.php">
-                        <button name="exportar" value="esportes" class="btn">Exportar Esportes</button>
-                    </form>
+            <div class="card-body d-flex justify-content-center align-items-center" style="height: 100%; flex-direction: column;">
+                <div class="mb-3 d-flex justify-content-around w-100">
+                    <div class="text-center">
+                        <p><strong><?php echo $giroCount; ?></strong></p>
+                        <form method="post" action="../Dashboard/processamento/exportar_giros.php">
+                            <button name="exportar" value="giros" class="btn_envio">Exportar Giros</button>
+                        </form>
+                    </div>
+                    <div class="text-center">
+                        <p><strong><?php echo $premiacaoCount; ?></strong></p>
+                        <form method="post" action="../Dashboard/processamento/exportar_premiacao.php">
+                            <button name="exportar" value="premiacao" class="btn_envio">Exportar Premiação</button>
+                        </form>
+                    </div>
+                    <div class="text-center">
+                        <p><strong><?php echo $EsportesCount; ?></strong></p>
+                        <form method="post" action="../Dashboard/processamento/exportar_esportes.php">
+                            <button name="exportar" value="esportes" class="btn_envio">Exportar Esportes</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="card mb-4">
-            <div class="card-body text-center">
-                <h5 class="card-title"><i style="margin-right:5px" class="bi bi-person-fill-x mb-2"></i>Exclusão de Registros</h5>
-                <div class="button-container d-flex align-items-center mt-4">
-                    <script>
-                        function confirmDelete() {
-                            return confirm("Você realmente quer deletar os registros?");
-                        }
-                    </script>
+            <hr>
 
-                    <form method="POST" action="./processamento/delete_users_giros.php" class="form-status" onsubmit="return confirmDelete();">
-                        <input type="hidden" name="eventoId3" value="6">
-                        <button class="btn mb-2" type="submit">
-                            <i class="bi bi-trash3-fill"></i> Giros
-                        </button>
-                    </form>
+            <h5 class="text-center"><i style="margin-right:5px" class="bi bi-person-fill-x mb-2"></i>Exclusão de Registros</h5>
+            <div class="button-container d-flex align-items-center mt-4">
+                <script>
+                    function confirmDelete() {
+                        return confirm("Você realmente quer deletar os registros?");
+                    }
+                </script>
 
-                    <form method="POST" action="./processamento/delete_users_premiacao.php" class="form-status" onsubmit="return confirmDelete();">
-                        <input type="hidden" name="eventoId1" value="7">
-                        <button class="btn mb-2" type="submit">
-                            <i class="bi bi-trash3-fill"></i> Prêmios
-                        </button>
-                    </form>
+                <form method="POST" action="./processamento/delete_users_giros.php" class="form-status" onsubmit="return confirmDelete();">
+                    <input type="hidden" name="eventoId3" value="6">
+                    <button class="btn mb-2" type="submit">
+                        <i class="bi bi-trash3-fill"></i> Giros
+                    </button>
+                </form>
 
-                    <form method="POST" action="./processamento/delete_users_esportes.php" class="form-status" onsubmit="return confirmDelete();">
-                        <input type="hidden" name="eventoId4" value="1">
-                        <button class="btn mb-2" type="submit">
-                            <i class="bi bi-trash3-fill"></i> Esportes
-                        </button>
-                    </form>
-                </div>
+                <form method="POST" action="./processamento/delete_users_premiacao.php" class="form-status" onsubmit="return confirmDelete();">
+                    <input type="hidden" name="eventoId1" value="7">
+                    <button class="btn mb-2" type="submit">
+                        <i class="bi bi-trash3-fill"></i> Prêmios
+                    </button>
+                </form>
+
+                <form method="POST" action="./processamento/delete_users_esportes.php" class="form-status" onsubmit="return confirmDelete();">
+                    <input type="hidden" name="eventoId4" value="1">
+                    <button class="btn mb-2" type="submit">
+                        <i class="bi bi-trash3-fill"></i> Esportes
+                    </button>
+                </form>
             </div>
         </div>
     </div>

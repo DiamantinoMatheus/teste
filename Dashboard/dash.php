@@ -25,7 +25,7 @@ require_once "../Dashboard/processamento/Auth.php";
     <link rel="shortcut icon" href="https://static.pl-01.cdn-platform.com/themes/1.1.7/reals.bet/icons/favicon.ico">
 
     <title>Painel</title>
-    <link rel="stylesheet" href="css/dash.css">
+    <link rel="stylesheet" href="css/dashs.css">
     <link rel="icon" href="./img/logo.png" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -294,10 +294,7 @@ require_once "../Dashboard/processamento/Auth.php";
                 setupFormListeners(); // Chama a função para configurar os ouvintes
             </script>
 
-            
-
-
-            <div class="container mt-5">
+            <!-- <div class="container mt-5">
                 <h2 class="mb-4 titulo">Adicionar Evento</h2>
                 <div class="form-group">
                     <label for="tipoFormulario" class="mb-3">Selecione o tipo de formulário:</label>
@@ -362,7 +359,7 @@ require_once "../Dashboard/processamento/Auth.php";
                     </div>
                     <button type="submit" class="btn_envio">Adicionar Evento de Esportes</button>
                 </form>
-            </div>
+            </div> -->
 
             <?php
             require_once '../back-php/conexao.php'; // Inclua o arquivo de conexão
@@ -397,16 +394,21 @@ require_once "../Dashboard/processamento/Auth.php";
                 <div class="row">
                     <?php if (!empty($eventos)) : ?>
                         <?php foreach ($eventos as $evento) : ?>
-                            <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
+                            <div class="col-lg-4 col-md-4 col-sm-6 mb-4"> <!-- Ajustando a largura -->
                                 <div class="card">
+                                    <div class="d-flex mt-1 mb-1 justify-content-center">
+                                        <button type="button" class="button-edit delete-button" data-bs-toggle="modal" data-bs-target="#editModal<?php echo htmlspecialchars($evento['id']); ?>">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </button>
+                                    </div>
+
                                     <!-- Exibição do Banner -->
                                     <?php if (!empty($evento['banner'])) : ?>
-                                        <img src="data:image/jpeg;base64,<?php echo base64_encode($evento['banner']); ?>" class="card-img-top" alt="Banner do Evento">
+                                        <img src="data:image/jpeg;base64,<?php echo base64_encode($evento['banner']); ?>" class="card-img-top" alt="Banner do Evento" style="height: 50%; object-fit: cover;"> <!-- Diminuindo a altura -->
                                     <?php endif; ?>
 
                                     <div class="card-body">
-                                        <h5 class="card-title" style="text-align: center;"> <?php echo $evento['titulo']; ?>
-                                        </h5>
+                                        <h5 class="card-title" style="text-align: center;"><?php echo htmlspecialchars($evento['titulo']); ?></h5>
                                         <p>REGRAS:<br>
                                             - Estar inscrito no CANAL do TELEGRAM;<br>
                                             - Seguir a REALS no INSTAGRAM;<br>
@@ -418,17 +420,10 @@ require_once "../Dashboard/processamento/Auth.php";
                                             Caso não tenha conta na Reals Bet, CADASTRE-SE AQUI!
                                         </p>
                                         <!-- Exibição da Imagem do Evento -->
-                                        <div class="conteudo">
+                                        <div class="conteudo col-lg-5">
                                             <?php if (!empty($evento['imagem'])) : ?>
-                                                <img src="data:image/jpeg;base64,<?php echo base64_encode($evento['imagem']); ?>" class="img-thumbnail" alt="Imagem do Evento">
+                                                <img src="data:image/jpeg;base64,<?php echo base64_encode($evento['imagem']); ?>" class="img-thumbnail" alt="Imagem do Evento" style="height: 50%; object-fit: cover;"> <!-- Diminuindo a altura -->
                                             <?php endif; ?>
-                                        </div>
-                                        <div class="d-flex gap-2 mt-3 justify-content-center">
-                                            <!-- Botão para abrir o modal de Editar -->
-                                            <button type="button" class="button-option delete-button" data-bs-toggle="modal" data-bs-target="#editModal<?php echo htmlspecialchars($evento['id']); ?>">
-                                                <i class="bi bi-pencil-fill"></i>
-                                            </button>
-
                                         </div>
 
                                         <!-- Modal de Editar -->
@@ -466,6 +461,7 @@ require_once "../Dashboard/processamento/Auth.php";
                                     </div>
                                 </div>
                             </div>
+
                         <?php endforeach; ?>
                     <?php else : ?>
                         <p class="text-center">Nenhum evento encontrado.</p>
