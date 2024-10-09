@@ -18,15 +18,19 @@ jobs:
           echo "$EC2_PRIVATE_KEY" > /tmp/ec2_key.ppk
           chmod 600 /tmp/ec2_key.ppk
 
+      - name: Add EC2 to known_hosts
+        run: |
+          ssh-keyscan -H 54.207.0.19 >> ~/.ssh/known_hosts
+
       - name: Sync files to EC2
         run: |
           # Sincronizar arquivos do repositório com o servidor EC2
-          rsync -avz -e "ssh -i /tmp/ec2_key.ppk" ./ ubuntu@54.207.0.19:/var/www/15.228.254.240
+          rsync -avz -e "ssh -i /tmp/ec2_key.ppk" ./ ubuntu@54.207.0.19:/var/www/seu_projeto
 
       - name: Build and run Docker container on EC2
         run: |
           ssh -i /tmp/ec2_key.ppk ubuntu@54.207.0.19 << 'EOF'
-          cd /var/www/15.228.254.240
+          cd /var/www/seu_projeto
           docker build -t my-deploy-image .
-          docker run --rm my-deploy-image bash -c "rsync -avz ./ ubuntu@localhost:/var/www/15.228.254.240 && sudo systemctl restart nginx"
+          docker run --rm my-deploy-image bash -c "rsync -avz ./ ubuntu@localhost:/var/www/seu_projeto && sudo systemctl restart nginx"
           EOF
