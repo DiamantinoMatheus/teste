@@ -18,6 +18,11 @@ jobs:
           echo "$EC2_PRIVATE_KEY" > /tmp/ec2_key.ppk
           chmod 600 /tmp/ec2_key.ppk
 
+      - name: Create SSH directory
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
       - name: Add EC2 to known_hosts
         run: |
           ssh-keyscan -H 54.207.0.19 >> ~/.ssh/known_hosts
