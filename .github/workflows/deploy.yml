@@ -18,14 +18,15 @@ jobs:
           echo "$EC2_PRIVATE_KEY" > /tmp/ec2_key.ppk
           chmod 600 /tmp/ec2_key.ppk
 
-      - name: Build Docker image
+      - name: Sync files to EC2
         run: |
-          # Use o Dockerfile na raiz do diretório /var/www/15.228.254.240
-          docker build -t my-deploy-image -f /var/www/15.228.254.240/Dockerfile /var/www/15.228.254.240
+          # Sincronizar arquivos do repositório com o servidor EC2
+          rsync -avz -e "ssh -i /tmp/ec2_key.ppk" ./ ubuntu@54.207.0.19:/var/www/15.228.254.240
 
-      - name: Run Docker container for deployment
+      - name: Build and run Docker container on EC2
         run: |
-          docker run --rm -e SSH_KEY=/tmp/ec2_key.ppk my-deploy-image bash -c "
-          rsync -avz -e 'plink -i \$SSH_KEY' ./ ubuntu@seu_servidor_ec2.amazonaws.com:/var/www/seu_projeto
-          ssh -i \$SSH_KEY ubuntu@seu_servidor_ec2.amazonaws.com 'sudo systemctl restart nginx'
-          "
+          ssh -i /tmp/ec2_key.ppk ubuntu@54.207.0.19 << 'EOF'
+          cd /var/www/15.228.254.240
+          docker build -t my-deploy-image .
+          docker run --rm my-deploy-image bash -c "rsync -avz ./ ubuntu@localhost:/var/www/15.228.254.240 && sudo systemctl restart nginx"
+          EOF
