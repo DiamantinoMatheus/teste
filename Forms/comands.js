@@ -91,10 +91,9 @@ inputsTexto.forEach(function (input) {
 });
 
 document.getElementById('codigo').addEventListener('input', function (e) {
-    // Remove letras e os caracteres .,()/:[]~´`'"+=-_^ e mantém apenas números
+    // Remove letras e os caracteres indesejados, incluindo o hífen (-)
     this.value = this.value.replace(/[a-zA-Z.,()$¨%@!&*/:€£¥•‘’”“[\]~´`-ÇçáàéèÈÁÉÈÀóòÓÒúùÚÙÍÌíì'"+=-_^#@{}/|;]/g, '');
 });
-
 
 function handleSubmit() {
     const recaptchaResponse = grecaptcha.getResponse(); // Obtém a resposta do reCAPTCHA
