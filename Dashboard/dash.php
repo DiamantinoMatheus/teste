@@ -25,7 +25,7 @@ require_once "../Dashboard/processamento/Auth.php";
     <link rel="shortcut icon" href="https://static.pl-01.cdn-platform.com/themes/1.1.7/reals.bet/icons/favicon.ico">
 
     <title>Painel</title>
-    <link rel="stylesheet" href="css/dashs.css">
+    <link rel="stylesheet" href="./css/dashs.css" media="print" onload="this.media='all'">
     <link rel="icon" href="./img/logo.png" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -41,8 +41,10 @@ require_once "../Dashboard/processamento/Auth.php";
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
             <a href="dash.php" class="navbar-brand">
-                <img src="../img/logo.webp" alt="logo" class="logo" />
-            </a>
+                <img src="../img/logo.webp"
+                    class="logo"
+                    alt="Imagem do Evento"
+                    loading="lazy" width="auto" height="auto"> </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -404,25 +406,33 @@ require_once "../Dashboard/processamento/Auth.php";
 
                                     <!-- Exibição do Banner -->
                                     <?php if (!empty($evento['banner'])) : ?>
-                                        <img src="data:image/jpeg;base64,<?php echo base64_encode($evento['banner']); ?>" class="card-img-top" alt="Banner do Evento" style="height: 50%; object-fit: cover;"> <!-- Diminuindo a altura -->
+                                        <img src="data:image/jpeg;base64,<?php echo base64_encode($evento['banner']); ?>"
+                                            class="card-img-top"
+                                            alt="Imagem do Evento"
+                                            style="height: 50%; object-fit: cover;"
+                                            loading="lazy">
                                     <?php endif; ?>
 
-                                    <div class="card-body">
-                                        <h5 class="card-title" style="text-align: center;"><?php echo htmlspecialchars($evento['titulo']); ?></h5>
-                                        <p>REGRAS:<br>
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title"><?php echo htmlspecialchars($evento['titulo']); ?></h5>
+                                        <p class="rules">
+                                            <strong>REGRAS:</strong><br>
                                             - Estar inscrito no CANAL do TELEGRAM;<br>
                                             - Seguir a REALS no INSTAGRAM;<br>
                                             - Preencher o formulário abaixo CORRETAMENTE;<br>
-                                            - Caso não esteja cumprindo as 3 regras, NÃO RECEBERÁ AS PREMIAÇÕES.<br>
-
-                                            <br><br>
-                                            Preencha somente UMA ÚNICA VEZ o formulário com seus DADOS CORRETOS utilizados na REALS BET.
-                                            Caso não tenha conta na Reals Bet, CADASTRE-SE AQUI!
+                                            - Caso não cumpra as 3 regras, NÃO RECEBERÁ AS PREMIAÇÕES.<br>
+                                            <br>
+                                            Preencha somente UMA VEZ o formulário com seus DADOS CORRETOS utilizados na REALS BET.
+                                            Caso não tenha conta, <a href="#">CADASTRE-SE AQUI!</a>
                                         </p>
-                                        <!-- Exibição da Imagem do Evento -->
+
                                         <div class="conteudo col-lg-5">
-                                            <?php if (!empty($evento['imagem'])) : ?>
-                                                <img src="data:image/jpeg;base64,<?php echo base64_encode($evento['imagem']); ?>" class="img-thumbnail" alt="Imagem do Evento" style="height: 50%; object-fit: cover;"> <!-- Diminuindo a altura -->
+                                            <?php if (!empty($evento['imagem'])): ?>
+                                                <img src="data:image/jpeg;base64,<?php echo base64_encode($evento['imagem']); ?>"
+                                                    class="img-thumbnail"
+                                                    alt="Imagem do Evento"
+                                                    style="max-width: 100%; height: auto; object-fit: cover;"
+                                                    loading="lazy" width="400" height="300">
                                             <?php endif; ?>
                                         </div>
 
@@ -449,7 +459,6 @@ require_once "../Dashboard/processamento/Auth.php";
                                                                 <label for="imagem<?php echo $evento['id']; ?>" class="form-label">Imagem:</label>
                                                                 <input type="file" class="form-control" id="imagem<?php echo $evento['id']; ?>" name="imagem">
                                                             </div>
-
                                                             <div class="modal-footer">
                                                                 <button type="submit" class="button-delete button-option">Salvar Mudanças</button>
                                                             </div>
@@ -477,7 +486,7 @@ require_once "../Dashboard/processamento/Auth.php";
 
     </main>
 
-    <script>
+    <script defer>
         function mostrarFormulario(tipo) {
             // Seleciona os formulários
             const formularioGiro = document.getElementById('formularioGiro');
@@ -503,10 +512,10 @@ require_once "../Dashboard/processamento/Auth.php";
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyJ0I72fLevddux1FRXr+8f77kyJyE05bM"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous" defer></script>
 
 </body>
 

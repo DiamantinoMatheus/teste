@@ -46,8 +46,10 @@ if (!isset($_SESSION['email'])) {
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
             <a href="dash.php" class="navbar-brand">
-                <img src="../img/logo.webp" alt="logo" class="logo" />
-            </a>
+                <img src="../img/logo.webp"
+                    class="logo"
+                    alt="Imagem do Evento"
+                    loading="lazy" width="auto" height="auto"> </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
