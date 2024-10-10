@@ -16,9 +16,6 @@ if (isset($_SESSION['message'])) {
 
 // Inclui o arquivo de conexão com o banco de dados
 require_once '../back-php/conexao.php';
-include_once ('../back-php/protected_page.php');
-
-
 
 if (!isset($pdo)) {
     error_log("Erro na conexão com o banco de dados.");
@@ -57,32 +54,62 @@ try {
 
         if ($formularioAberto) {
             // O formulário está aberto, então exibe o formulário
+            // Supondo que você já tenha as chaves do reCAPTCHA
+            $siteKey = '6LdcnV0qAAAAAMGGUszs1Qfy90aWwRoVtWNmiUIM'; // Substitua pela sua site key do reCAPTCHA
+            $secretKey = '6LdcnV0qAAAAAO0dhcpdmD_65NLVsz4doG8L5Xly'; // Substitua pela sua secret key do reCAPTCHA
+
             $formularioHtml = '
-                <form id="formulario" class="form" method="POST" action="../Dashboard/processamento/insert_dados-giro.php" enctype="multipart/form-data" onsubmit="handleSubmit()">                    <input type="hidden" name="csrf_token" value="' . htmlspecialchars($csrf_token, ENT_QUOTES, 'UTF-8') . '">
-                    <input type="hidden" name="id" value="' . (isset($id) ? htmlspecialchars($id, ENT_QUOTES, 'UTF-8') : '') . '">
+    <form id="formulario" class="form" method="POST" action="../Dashboard/processamento/insert_dados-giro.php" enctype="multipart/form-data" onsubmit="return handleSubmit()">                    
+        <input type="hidden" name="csrf_token" value="' . htmlspecialchars($csrf_token, ENT_QUOTES, 'UTF-8') . '">
+        <input type="hidden" name="id" value="' . (isset($id) ? htmlspecialchars($id, ENT_QUOTES, 'UTF-8') : '') . '">
 
-                    <div class="form-group">
-                        <input type="text" name="nome" id="nome" placeholder="Informe seu nome" value="' . (isset($nome) ? htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') : '') . '" required pattern="[A-Za-z\s]+" title="Digite apenas letras e espaços.">
-                    </div>
-                    <div class="form-group">
-                        <input type="email" id="email" name="email" placeholder="Informe seu Email" value="' . (isset($email) ? htmlspecialchars($email, ENT_QUOTES, 'UTF-8') : '') . '" required>
-                    </div>
+        <div class="form-group">
+            <input type="text" name="nome" id="nome" placeholder="Informe seu nome" value="' . (isset($nome) ? htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') : '') . '" required pattern="[A-Za-z\s]+" title="Digite apenas letras e espaços.">
+        </div>
+        <div class="form-group">
+            <input type="email" id="email" name="email" placeholder="Informe seu Email" value="' . (isset($email) ? htmlspecialchars($email, ENT_QUOTES, 'UTF-8') : '') . '" required>
+        </div>
 
-                    <h1>ID DA SUA CONTA REALS - <strong class="regras"><em>SOMENTE OS NÚMEROS, NÃO COLOCAR "ID#"</em></strong></h1>
-                    <p>Acesse "MENU" ➜ "CARTEIRA/PERFIL" ➜ DIGITE <strong><em>SOMENTE OS NÚMEROS</em></strong> DA ID QUE APARECER</p>
-                    <div class="imagens">
-                    ' . $imagem . '
-                    </div>
-                    <div class="form-group foto">
-                        <input type="text" id="codigo" name="codigo" placeholder="Digite seu ID aqui" 
-                            value="' . (isset($codigo) ? htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') : '') . '">
-                    </div>
+        <h1>ID DA SUA CONTA REALS - <strong class="regras"><em>SOMENTE OS NÚMEROS, NÃO COLOCAR "ID#"</em></strong></h1>
+        <p>Acesse "MENU" ➜ "CARTEIRA/PERFIL" ➜ DIGITE <strong><em>SOMENTE OS NÚMEROS</em></strong> DA ID QUE APARECER</p>
+        <div class="imagens">' . $imagem . '</div>
+        <div class="form-group foto">
+            <input type="text" id="codigo" name="codigo" placeholder="Digite seu ID aqui" 
+                value="' . (isset($codigo) ? htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') : '') . '">
+        </div>
 
+        <!-- Adiciona o widget do reCAPTCHA -->
+        <div class="form-group">
+            <div class="g-recaptcha" data-sitekey="' . $siteKey . '"></div>
+        </div>
 
-                    <div class="form-group">
-                        <button type="submit">Enviar</button>
-                    </div>
-                </form>';
+        <div class="form-group">
+            <button type="submit">Enviar</button>
+        </div>
+    </form>
+    
+    <!-- Adiciona o script do reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+';
+
+            // Processamento do formulário
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Verifica o CAPTCHA
+                $recaptchaResponse = $_POST['g-recaptcha-response'];
+                $remoteIp = $_SERVER['REMOTE_ADDR'];
+
+                // Faz a requisição para o Google para verificar o CAPTCHA
+                $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$secretKey}&response={$recaptchaResponse}&remoteip={$remoteIp}");
+                $responseKeys = json_decode($response, true);
+
+                if (intval($responseKeys["success"]) !== 1) {
+                    // CAPTCHA não verificado, lide com o erro
+                    echo "Por favor, complete o CAPTCHA.";
+                } else {
+                    // CAPTCHA verificado, prossiga com o processamento do formulário
+                    // Aqui você pode inserir os dados no banco de dados ou fazer o que precisar
+                }
+            }
         } else {
             // Exibe mensagem de formulário fechado
             $formularioHtml = '<p>O formulário está fechado no momento.</p>';
@@ -91,6 +118,39 @@ try {
 } catch (PDOException $e) {
     $message = "Erro na consulta: " . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
     $messageClass = 'error';
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Verifica o CAPTCHA
+    $recaptchaResponse = $_POST['g-recaptcha-response'];
+    $remoteIp = $_SERVER['REMOTE_ADDR'];
+    $secretKey = 'SUA_SECRET_KEY_AQUI'; // Substitua pela sua chave secreta do reCAPTCHA
+
+    // Faz a requisição para o Google para verificar o CAPTCHA
+    $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$secretKey}&response={$recaptchaResponse}&remoteip={$remoteIp}");
+    $responseKeys = json_decode($response, true);
+
+    if (intval($responseKeys["success"]) !== 1) {
+        // CAPTCHA não verificado, lide com o erro
+        echo "<script>alert('Por favor, complete o CAPTCHA.');</script>";
+    } else {
+        // Validação do ID
+        if (isset($_POST['codigo']) && validarID($_POST['codigo'])) {
+            // CAPTCHA verificado e ID válido, prossiga com o processamento do formulário
+            // Aqui você pode inserir os dados no banco de dados ou fazer o que precisar
+            echo "<script>alert('Formulário enviado com sucesso!');</script>";
+        } else {
+            // ID inválido
+            echo "<script>alert('O ID fornecido é inválido.');</script>";
+        }
+    }
+}
+
+// Função de validação do ID
+function validarID($id) {
+    // Verifique se o ID atende às suas regras de validação
+    // Por exemplo, verificar se é um número e está em um formato específico
+    return preg_match('/^[0-9]+$/', $id); // Apenas um exemplo: verifica se o ID é um número
 }
 ?>
 
@@ -190,6 +250,17 @@ try {
                 } else {
                     errorSpan.style.display = 'block'; // Mostrar erro
                 }
+            }
+
+            function handleSubmit() {
+                const recaptchaResponse = grecaptcha.getResponse(); // Obtém a resposta do reCAPTCHA
+
+                if (!recaptchaResponse) {
+                    alert("Por favor, complete o CAPTCHA.");
+                    return false; // Impede o envio do formulário
+                }
+
+                return true; // Permite o envio do formulário
             }
         </script>
         <script src="comandos.js"></script>
