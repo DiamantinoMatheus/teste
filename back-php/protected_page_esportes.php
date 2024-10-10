@@ -1,5 +1,4 @@
 <?php
-session_start(); // Inicia a sessão
 
 // Verificar se o usuário passou pelo CAPTCHA
 if (!isset($_SESSION['captcha_verified']) || $_SESSION['captcha_verified'] !== true) {

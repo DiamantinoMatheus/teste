@@ -458,7 +458,6 @@ input[type="tel"]:focus {
     display: flex; /* Usar flexbox para centralização */
     justify-content: center; /* Centraliza horizontalmente */
     align-items: center; /* Centraliza verticalmente (caso tenha altura definida) */
-    height: 100%; /* Defina a altura se necessário */
 }
 
 .imagens img {
