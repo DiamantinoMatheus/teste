@@ -92,7 +92,7 @@ inputsTexto.forEach(function (input) {
 
 document.getElementById('codigo').addEventListener('input', function (e) {
     // Remove letras e os caracteres .,()/:[]~´`'"+=-_^ e mantém apenas números
-    this.value = this.value.replace(/[a-zA-Z.,()$¨%@!&*/:[\]~´`ÇçáàéèÈÁÉÈÀóòÓÒúùÚÙÍÌíì'"+=-_^#@{}/|;]/g, '');
+    this.value = this.value.replace(/[a-zA-Z.,()$¨%@!&*/:€£¥•’[\]~´`ÇçáàéèÈÁÉÈÀóòÓÒúùÚÙÍÌíì'"+=-_^#@{}/|;]/g, '');
 });
 
 
