@@ -14,16 +14,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($responseData->success) {
         $_SESSION['captcha_verified'] = true; // Define a variável de sessão para verdadeiro
         // Redirecionar ou continuar o processamento do formulário
-        header(header: 'location: .././Forms/giros.php');
+        header(header: 'location: .././Forms/premiadas.php');
         // Aqui você pode redirecionar para outra página
     } else {
         // CAPTCHA falhou
-        header(header: 'location: .././Forms/recaptcha-verification-giros.html');
+        header(header: 'location: .././Forms/recaptcha-verification-premios.html');
         // Redirecionar ou lidar com o erro
         $_SESSION['captcha_verified'] = false; // Define a variável de sessão para falso
     }
 } else {
     // Acesso não permitido
     echo 'Método não permitido.';
-    header(header: 'location: .././Forms/recaptcha-verification-giros.html');
+    header(header: 'location: .././Forms/recaptcha-verification-premios.html');
 }

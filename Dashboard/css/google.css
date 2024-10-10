@@ -1,0 +1,78 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza verticalmente */
+    align-items: center; /* Centraliza horizontalmente */
+    min-height: 100vh; /* Garante que ocupe toda a altura da tela */
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    padding: 20px;
+    overflow-y: hidden;
+}
+
+h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 0 10px;
+}
+
+#captcha-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    margin-bottom: 20px; /* Adicionando espaço abaixo do formulário */
+}
+
+.g-recaptcha {
+    margin: 0 auto; /* Centraliza o reCAPTCHA */
+    box-sizing: border-box;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos para dispositivos móveis */
+@media (max-width: 600px) {
+    h2 {
+        font-size: 18px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 12px; /* Aumentando o padding para ser mais fácil de clicar */
+    }
+
+    #captcha-form {
+        padding: 10px;
+        align-items: center; /* Mantendo centralizado */
+        width: 100%; /* Garantindo que ocupe toda a largura */
+        position: relative; /* Para facilitar o posicionamento */
+    }
+
+    .g-recaptcha {
+        width: 100%; /* Ajustando a largura do reCAPTCHA */
+        height: auto; /* Ajustando a altura se necessário */
+    }
+}

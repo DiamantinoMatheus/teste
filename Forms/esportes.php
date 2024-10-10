@@ -1,8 +1,5 @@
 <?php
-// Inicia a sessão se não estiver já iniciada
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+include_once ('../back-php/protected_page_esportes.php');
 
 $message = '';
 $messageClass = '';

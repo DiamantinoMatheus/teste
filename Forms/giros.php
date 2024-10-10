@@ -1,9 +1,4 @@
 <?php
-// Inicia a sessão se não estiver já iniciada
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 // Inicializa variáveis de mensagem e classe de mensagem
 $message = '';
 $messageClass = '';
@@ -19,6 +14,7 @@ if (isset($_SESSION['message'])) {
 
 // Inclui o arquivo de conexão com o banco de dados
 require_once '../back-php/conexao.php';
+include_once ('../back-php/protected_page.php');
 
 
 
