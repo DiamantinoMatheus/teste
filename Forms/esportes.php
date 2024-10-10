@@ -1,6 +1,8 @@
 <?php
 include_once ('../back-php/protected_page_esportes.php');
-session_start(); // Inicia a sessão
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 $message = '';
 $messageClass = '';

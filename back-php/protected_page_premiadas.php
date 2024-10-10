@@ -1,4 +1,7 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Verificar se o usuário passou pelo CAPTCHA
 if (!isset($_SESSION['captcha_verified']) || $_SESSION['captcha_verified'] !== true) {

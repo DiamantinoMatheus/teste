@@ -1,5 +1,7 @@
 <?php
-session_start(); // Inicia a sessão
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 $message = '';
 $messageClass = '';
 
