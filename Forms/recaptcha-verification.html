@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificação de Segurança</title>
+    <link rel="stylesheet" href="../Dashboard/css/captcha.css">
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LeFgV0qAAAAAMOzvZddqXlFQVVUU5g4YmzK3iJf"></script> <!-- Substitua YOUR_SITE_KEY pela sua chave do site -->
+</head>
+
+<body>
+    <h2>Por favor, resolva o CAPTCHA para acessar o site</h2>
+    <form id="captcha-form" action="../back-php/verify.php" method="POST">
+        <!-- Token CSRF -->
+        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+        <!-- Widget do reCAPTCHA -->
+        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+        <br>
+        <button type="submit" onclick="onClick(event)">Verificar</button>
+    </form>
+
+    <script>
+        async function onClick(e) {
+            e.preventDefault(); // Impede o envio padrão do formulário
+            grecaptcha.enterprise.ready(async () => {
+                const token = await grecaptcha.enterprise.execute('6LeFgV0qAAAAAMOzvZddqXlFQVVUU5g4YmzK3iJf', { action: 'LOGIN' });
+                document.getElementById('g-recaptcha-response').value = token; // Define o token gerado no campo oculto
+                document.getElementById('captcha-form').submit(); // Envia o formulário após a verificação do CAPTCHA
+            });
+        }
+    </script>
+</body>
+
+</html>

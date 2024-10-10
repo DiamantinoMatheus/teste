@@ -20,6 +20,13 @@ if (isset($_SESSION['message'])) {
 // Inclui o arquivo de conexão com o banco de dados
 require_once '../back-php/conexao.php';
 
+// Verificar se o usuário passou pelo CAPTCHA
+if (!isset($_SESSION['captcha_verified']) || $_SESSION['captcha_verified'] !== true) {
+    // Redirecionar para a página de verificação do CAPTCHA
+    header('Location: recaptcha-verification.html');
+    exit();
+}
+
 if (!isset($pdo)) {
     error_log("Erro na conexão com o banco de dados.");
     $message = "Ocorreu um problema. Tente novamente mais tarde.";

@@ -1,0 +1,26 @@
+body {
+    display: flex;
+    justify-content: center;
+    /* Centraliza horizontalmente */
+    align-items: center;
+    /* Centraliza verticalmente */
+    height: 100vh;
+    /* Define a altura da viewport */
+    margin: 0;
+    /* Remove margens padrão */
+    display: flex;
+    flex-direction: column;
+}
+
+#captcha-form {
+    text-align: center;
+    /* Centraliza o texto dentro do formulário */
+    padding: 20px;
+    /* Adiciona espaçamento interno */
+    border: 1px solid #ccc;
+    /* Adiciona uma borda ao formulário */
+    border-radius: 8px;
+    /* Arredonda as bordas do formulário */
+    background-color: #f9f9f9;
+    /* Adiciona uma cor de fundo */
+}
