@@ -86,11 +86,23 @@ function bloquearSimbolos(event) {
 const inputsTexto = document.querySelectorAll('input[type="text"]');
 
 // Adiciona o evento de input para cada campo
-inputsTexto.forEach(function(input) {
+inputsTexto.forEach(function (input) {
     input.addEventListener('input', bloquearSimbolos);
 });
 
-document.getElementById('codigo').addEventListener('input', function(e) {
-    // Remove qualquer letra e mantém apenas números
-    this.value = this.value.replace(/[a-zA-Z]/g, '');
+document.getElementById('codigo').addEventListener('input', function (e) {
+    // Remove letras e os caracteres .,()/:[]~´`'"+=-_^ e mantém apenas números
+    this.value = this.value.replace(/[a-zA-Z.,()$¨%@!&*/:[\]~´`ÇçáàéèÈÁÉÈÀóòÓÒúùÚÙÍÌíì'"+=-_^#@{}/|;]/g, '');
 });
+
+
+function handleSubmit() {
+    const recaptchaResponse = grecaptcha.getResponse(); // Obtém a resposta do reCAPTCHA
+
+    if (!recaptchaResponse) {
+        alert("Por favor, complete o CAPTCHA.");
+        return false; // Impede o envio do formulário
+    }
+
+    return true; // Permite o envio do formulário
+}

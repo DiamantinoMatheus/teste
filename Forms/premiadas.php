@@ -200,18 +200,8 @@ try {
                 }
             }
 
-            function handleSubmit() {
-                const recaptchaResponse = grecaptcha.getResponse(); // Obtém a resposta do reCAPTCHA
-
-                if (!recaptchaResponse) {
-                    alert("Por favor, complete o CAPTCHA.");
-                    return false; // Impede o envio do formulário
-                }
-
-                return true; // Permite o envio do formulário
-            }
         </script>
-        <script src="comandos.js"></script>
+        <script src="comands.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6/jquery.inputmask.min.js"></script>
 

@@ -251,19 +251,8 @@ function validarID($id) {
                     errorSpan.style.display = 'block'; // Mostrar erro
                 }
             }
-
-            function handleSubmit() {
-                const recaptchaResponse = grecaptcha.getResponse(); // Obtém a resposta do reCAPTCHA
-
-                if (!recaptchaResponse) {
-                    alert("Por favor, complete o CAPTCHA.");
-                    return false; // Impede o envio do formulário
-                }
-
-                return true; // Permite o envio do formulário
-            }
         </script>
-        <script src="comandos.js"></script>
+        <script src="comands.js"></script>
 </body>
 
 </html>
