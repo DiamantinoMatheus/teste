@@ -1,9 +1,7 @@
 <?php
-include_once ('../back-php/protected_page_premiadas.php');
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
 
 $message = '';
 $messageClass = '';
@@ -23,6 +21,7 @@ require_once '../back-php/conexao.php';
 if (!isset($pdo)) {
     die("Erro: A conexão com o banco de dados não foi estabelecida.");
 }
+
 
 // Inicializa variáveis para evitar erros de variável não definida
 $banner = '';
@@ -54,9 +53,11 @@ try {
         $formularioAberto = $result['interative'];
 
         if ($formularioAberto) {
-            // O formulário está aberto, então exibe o formulário
+            $siteKey = '6LdcnV0qAAAAAMGGUszs1Qfy90aWwRoVtWNmiUIM'; // Substitua pela sua site key do reCAPTCHA
+            $secretKey = '6LdcnV0qAAAAAO0dhcpdmD_65NLVsz4doG8L5Xly'; // Substitua pela sua secret key do reCAPTCHA
+
             $htmlFormulario = '
-                <form id="formulario1" class="form" method="POST" action="../Dashboard/processamento/insert_dados-premios.php" enctype="multipart/form-data" onsubmit="handleSubmit()">
+                <form id="formulario1" class="form" method="POST" action="../Dashboard/processamento/insert_dados-premios.php" enctype="multipart/form-data" onsubmit="return handleSubmit()">
                     <input type="hidden" name="csrf_token" value="' . htmlspecialchars($csrf_token, ENT_QUOTES, 'UTF-8') . '">
                     <input type="hidden" name="id" value="' . (isset($id) ? htmlspecialchars($id, ENT_QUOTES, 'UTF-8') : '') . '">
 
@@ -68,7 +69,7 @@ try {
                     </div>
 
                     <div class="form-group">
-                        <input type="tel" id="zap" name="zap" placeholder="Informe seu WhatsApp" value="' . (isset($zap) ? htmlspecialchars($zap, ENT_QUOTES, 'UTF-8') : '') . '" required min="1" max="99999999999"  oninput="if (this.value.length > 11) this.value = this.value.slice(0, 11);" pattern="\d*" maxlength="11">
+                        <input type="tel" id="zap" name="zap" placeholder="Informe seu WhatsApp" value="' . (isset($zap) ? htmlspecialchars($zap, ENT_QUOTES, 'UTF-8') : '') . '" required min="1" max="99999999999" oninput="if (this.value.length > 11) this.value = this.value.slice(0, 11);" pattern="\d*" maxlength="11">
                     </div>
 
                     <h1>ID DA SUA CONTA REALS - <strong class="regras"><em>SOMENTE OS NÚMEROS, NÃO COLOCAR "ID#"</em></strong></h1>
@@ -81,10 +82,17 @@ try {
                             value="' . (isset($codigo) ? htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') : '') . '">
                     </div>
 
+                    <!-- Adiciona o widget do reCAPTCHA -->
+                    <div class="form-group">
+                        <div class="g-recaptcha" data-sitekey="' . $siteKey . '"></div>
+                    </div>
+
                     <div class="form-group">
                         <button type="submit">Enviar</button>
                     </div>
-                </form>';
+                </form>
+                <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+            ';
         } else {
             // Exibe mensagem de formulário fechado
             $htmlFormulario = '<p>O formulário está fechado no momento.</p>';
@@ -178,6 +186,30 @@ try {
                     }
                 });
             });
+
+            function validarID(input) {
+                // Bloquear caracteres não numéricos e simbolos < e >
+                input.value = input.value.replace(/[^0-9]/g, '');
+
+                // Verificar se o comprimento é 10
+                const errorSpan = document.getElementById('codigo-error');
+                if (input.value.length === 10) {
+                    errorSpan.style.display = 'none'; // Ocultar erro
+                } else {
+                    errorSpan.style.display = 'block'; // Mostrar erro
+                }
+            }
+
+            function handleSubmit() {
+                const recaptchaResponse = grecaptcha.getResponse(); // Obtém a resposta do reCAPTCHA
+
+                if (!recaptchaResponse) {
+                    alert("Por favor, complete o CAPTCHA.");
+                    return false; // Impede o envio do formulário
+                }
+
+                return true; // Permite o envio do formulário
+            }
         </script>
         <script src="comandos.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
