@@ -25,7 +25,7 @@ require_once "../Dashboard/processamento/Auth.php";
     <link rel="shortcut icon" href="https://static.pl-01.cdn-platform.com/themes/1.1.7/reals.bet/icons/favicon.ico">
 
     <title>Painel</title>
-    <link rel="stylesheet" href="./css/dashs.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="./css/dash.css" media="print" onload="this.media='all'">
     <link rel="icon" href="./img/logo.png" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -191,19 +191,20 @@ require_once "../Dashboard/processamento/Auth.php";
                         <h5 class="card-title">Formulários</h5>
                         <!-- Container flexível para os botões -->
                         <div class="button-container">
-                            <!-- Botão para Status de Giros com ícone -->
-                            <form method="POST" action="./processamento/statusForms.php" class="form-status">
-                                <input type="hidden" name="eventoId3" value="6">
-                                <button class="button-option" type="submit">
-                                    <i class="fas fa-unlock" id="icon-giros"></i> Giros
-                                </button>
-                            </form>
 
                             <!-- Botão para Status de Prêmios com ícone -->
                             <form method="POST" action="./processamento/statusForms_Premios.php" class="form-status">
                                 <input type="hidden" name="eventoId1" value="7">
                                 <button class="button-option" type="submit">
                                     <i class="fas fa-unlock" id="icon-premios"></i> Prêmios
+                                </button>
+                            </form>
+                            
+                            <!-- Botão para Status de Giros com ícone -->
+                            <form method="POST" action="./processamento/statusForms.php" class="form-status">
+                                <input type="hidden" name="eventoId3" value="6">
+                                <button class="button-option" type="submit">
+                                    <i class="fas fa-unlock" id="icon-giros"></i> Giros
                                 </button>
                             </form>
 

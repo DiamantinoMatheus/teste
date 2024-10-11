@@ -13,11 +13,9 @@
 /* Container dos botões */
 .button-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     gap: 10px;
-    /* Espaçamento entre os botões */
     margin-top: 10px;
-    /* Espaçamento superior para separação */
 }
 
 /* Estilos dos botões */
