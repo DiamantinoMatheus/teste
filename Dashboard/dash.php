@@ -180,18 +180,14 @@ require_once "../Dashboard/processamento/Auth.php";
         }
         ?>
 
-
-
         <div class="row d-flex justify-content-left">
             <!-- Card para Lives -->
             <div class="col-md-12 mb-4 card-container ">
                 <div class="card">
                     <div class="card-body ">
-                        <i class="bi bi-clipboard-pulse fa-2x mb-2"></i>
-                        <h5 class="card-title">Formulários</h5>
+                        <h5 style="padding: 10px; font-size: 25px;" class="card-title text-center"> <i style="margin-right: 10px;" class="bi bi-clipboard-pulse"></i>Formulários</h5>
                         <!-- Container flexível para os botões -->
-                        <div class="button-container">
-
+                        <div class="button-container" style="margin-top: 20px;">
                             <!-- Botão para Status de Prêmios com ícone -->
                             <form method="POST" action="./processamento/statusForms_Premios.php" class="form-status">
                                 <input type="hidden" name="eventoId1" value="7">

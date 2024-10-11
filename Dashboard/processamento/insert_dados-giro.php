@@ -3,6 +3,27 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Chave de criptografia (mantenha isso seguro, use uma variável de ambiente)
+$secret_key = 'sua_chave_super_secreta'; // NÃO armazene isso diretamente no código em produção!
+
+// Função para criptografar o e-mail
+function encrypt_email($email, $key)
+{
+    // Vetor de inicialização (IV) de 16 bytes (deve ser único para cada criptografia)
+    $iv = openssl_random_pseudo_bytes(16);
+    // Criptografa o e-mail
+    $encrypted_email = openssl_encrypt($email, 'aes-256-cbc', $key, 0, $iv);
+    // Retorna o IV junto com o e-mail criptografado, pois ele será necessário para descriptografar
+    return base64_encode($encrypted_email . '::' . $iv);
+}
+
+// Função para descriptografar o e-mail (usada ao exportar)
+function decrypt_email($encrypted_email, $key)
+{
+    list($encrypted_data, $iv) = explode('::', base64_decode($encrypted_email), 2);
+    return openssl_decrypt($encrypted_data, 'aes-256-cbc', $key, 0, $iv);
+}
+
 // Verifique se o formulário foi enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -48,10 +69,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
+        // Criptografa o e-mail antes de salvar
+        $email_criptografado = encrypt_email($email, $secret_key);
+
         // Insere os dados no banco
         $stmt = $conn->prepare("INSERT INTO giros (nome, email, codigo) VALUES (:nome, :email, :codigo)");
         $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':email', $email_criptografado); // Salva o e-mail criptografado
         $stmt->bindParam(':codigo', $codigo);
 
         if ($stmt->execute()) {

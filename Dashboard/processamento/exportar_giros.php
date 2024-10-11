@@ -14,6 +14,15 @@ if (!isset($_SESSION['email'])) {
 // Inclui o arquivo de conexão
 require_once __DIR__ . '/../../back-php/conexao.php'; // Ajuste o caminho conforme necessário
 
+// Chave de criptografia (mantenha isso seguro, use uma variável de ambiente)
+$secret_key = 'sua_chave_super_secreta'; // NÃO armazene isso diretamente no código em produção!
+
+// Função para descriptografar o e-mail (igual à que criamos anteriormente)
+function decrypt_email($encrypted_email, $key) {
+    list($encrypted_data, $iv) = explode('::', base64_decode($encrypted_email), 2);
+    return openssl_decrypt($encrypted_data, 'aes-256-cbc', $key, 0, $iv);
+}
+
 try {
     // Conexão com o banco de dados
     $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password);
@@ -39,6 +48,10 @@ try {
 
     // Escreve os dados no CSV
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        // Descriptografa o e-mail antes de exportar
+        $row['email'] = decrypt_email($row['email'], $secret_key);
+        
+        // Escreve a linha no CSV
         fputcsv($output, $row, ';'); // Usando ponto e vírgula como delimitador
     }
 
