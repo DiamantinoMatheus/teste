@@ -32,7 +32,6 @@ try {
     // Consulta para selecionar os dados da tabela 'premiacao'
     $sql = "SELECT nome, 
                    email, 
-                   codigo, 
                    whatsapp, 
                    tempo_mercado, 
                    site_apostas, 
@@ -55,7 +54,7 @@ try {
     fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
     // Escreve o cabeçalho do CSV
-    fputcsv($output, ['Nome', 'Email', 'Codigo', 'Whatsapp', 'Tempo de Mercado', 'Site de Apostas', 'Faturamento Médio', 'Faturamento Máximo', 'Data/Hora'], ';'); // Usando ponto e vírgula como delimitador
+    fputcsv($output, ['Nome', 'Email','Whatsapp', 'Tempo de Mercado', 'Site de Apostas', 'Faturamento Médio', 'Faturamento Máximo', 'Data/Hora'], ';'); // Usando ponto e vírgula como delimitador
 
     // Escreve os dados no CSV
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {

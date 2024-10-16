@@ -95,6 +95,7 @@ document.getElementById('codigo').addEventListener('input', function (e) {
     this.value = this.value.replace(/[a-zA-Z.,()$¨%@!&*/:€£¥•‘’”“[\]~´`-ÇçáàéèÈÁÉÈÀóòÓÒúùÚÙÍÌíì'"+=-_^#@{}/|;]/g, '');
 });
 
+
 function handleSubmit() {
     const recaptchaResponse = grecaptcha.getResponse(); // Obtém a resposta do reCAPTCHA
 

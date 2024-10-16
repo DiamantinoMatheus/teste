@@ -24,9 +24,9 @@ if (!isset($pdo)) {
 
 
 // Inicializa variáveis para evitar erros de variável não definida
-$banner = '';
-$titulo = 'Título não disponível';
-$imagem = '<p>Imagem não disponível</p>';
+$banner = ' ';
+$titulo = ' ';
+$imagem = ' ';
 $csrf_token = '';
 $htmlFormulario = '<p>O formulário não está disponível no momento.</p>'; // Valor padrão para evitar erros de variável não definida
 
@@ -45,6 +45,8 @@ try {
 
     if ($result) {
         // Converte os dados binários da imagem para Base64
+        $banner = $result['banner'] ? '<img src="data:image/jpeg;base64,' . base64_encode($result['banner']) . '" alt="Banner do Evento">' : '';
+        $imagem = $result['imagem'] ? '<img src="data:image/jpeg;base64,' . base64_encode($result['imagem']) . '" alt="Imagem do Evento">' : '';
         $titulo = htmlspecialchars($result['titulo'], ENT_QUOTES, 'UTF-8');
 
         // Verifica o estado do formulário
@@ -57,7 +59,6 @@ try {
             $htmlFormulario = '
                 <form id="formulario1" class="form" method="POST" action="../Dashboard/processamento/insert_dados-premios.php" enctype="multipart/form-data" onsubmit="return handleSubmit()">
                     <input type="hidden" name="csrf_token" value="' . htmlspecialchars($csrf_token, ENT_QUOTES, 'UTF-8') . '">
-                    <input type="hidden" name="id" value="' . (isset($id) ? htmlspecialchars($id, ENT_QUOTES, 'UTF-8') : '') . '">
 
                     <div class="form-group">
                         <input type="text" name="nome" id="nome" placeholder="Informe seu nome" value="' . (isset($nome) ? htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') : '') . '" required pattern="[A-Za-z\s]+" title="Digite apenas letras e espaços.">
@@ -67,20 +68,23 @@ try {
                     </div>
 
                     <div class="form-group">
-                        <input type="tel" id="zap" name="zap" placeholder="Informe seu WhatsApp" value="' . (isset($zap) ? htmlspecialchars($zap, ENT_QUOTES, 'UTF-8') : '') . '" required min="1" max="99999999999" oninput="if (this.value.length > 11) this.value = this.value.slice(0, 11);" pattern="\d*" maxlength="11">
+                        <input type="tel" id="whatsapp" name="whatsapp" placeholder="Informe seu WhatsApp" value="' . (isset($whatsapp) ? htmlspecialchars($whatsapp, ENT_QUOTES, 'UTF-8') : '') . '" required pattern="\d*" maxlength="11" title="Digite um número de WhatsApp válido.">
                     </div>
 
                     <div class="form-group">
-                        <input type="text" name="tempo_mercado" id="tempo_mercado" placeholder="Quanto tempo você atua no mercado digital?" required>
+                        <input type="text" name="tempo_mercado" id="tempo_mercado" placeholder="Tempo no mercado" value="' . (isset($tempo_mercado) ? htmlspecialchars($tempo_mercado, ENT_QUOTES, 'UTF-8') : '') . '" required>
                     </div>
+
                     <div class="form-group">
-                        <input type="text" name="site_apostas" id="site_apostas" placeholder="Já trabalhou com algum site de apostas? Qual?" required>
+                        <input type="text" name="site_apostas" id="site_apostas" placeholder="Site de apostas" value="' . (isset($site_apostas) ? htmlspecialchars($site_apostas, ENT_QUOTES, 'UTF-8') : '') . '" required>
                     </div>
+
                     <div class="form-group">
-                        <input type="number" name="faturamento_medio" id="faturamento_medio" placeholder="Qual é o seu faturamento médio mensal?" required>
+                        <input type="number" step="0.01" name="faturamento_medio" id="faturamento_medio" placeholder="Faturamento médio" value="' . (isset($faturamento_medio) ? htmlspecialchars($faturamento_medio, ENT_QUOTES, 'UTF-8') : '') . '" required>
                     </div>
+
                     <div class="form-group">
-                        <input type="number" name="faturamento_maximo" id="faturamento_maximo" placeholder="Qual foi o máximo que já atingiu em um mês?" required>
+                        <input type="number" step="0.01" name="faturamento_maximo" id="faturamento_maximo" placeholder="Faturamento máximo" value="' . (isset($faturamento_maximo) ? htmlspecialchars($faturamento_maximo, ENT_QUOTES, 'UTF-8') : '') . '" required>
                     </div>
 
                     <!-- Adiciona o widget do reCAPTCHA -->
@@ -94,7 +98,6 @@ try {
                 </form>
                 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
             ';
-
         } else {
             // Exibe mensagem de formulário fechado
             $htmlFormulario = '<p>O formulário está fechado no momento.</p>';
@@ -120,14 +123,24 @@ try {
 
 <body class="centro" style="background-image: url(../img/bg.webp); background-repeat: repeat-y;">
 
-    <div class="container" style="margin-top: 30px;">
-        <div class="header">
+    <div class="banner">
+    </div>
+    <div class="container">
+        <div class="header" style="margin-bottom: 30px;">
             <h1 class="titulo"><?php echo $titulo; ?></h1>
+            <!-- <h2><strong class="regras1"><em>REGRAS:</em></strong></h2>
+            <p>
+                Estar inscrito no <a href="https://t.me/comunidadereals">CANAL do TELEGRAM</a>;<br>
+                Seguir a <a href="https://www.instagram.com/reals.bet/">REALS no INSTAGRAM</a>;<br>
+                Preencher o formulário abaixo <strong class="regras">CORRETAMENTE</strong>;<br>
+                Caso não esteja cumprindo as 3 regras, <strong class="regras">NÃO RECEBERÁ AS PREMIAÇÕES</strong>.<br><br><br>
+                Preencha somente UMA <strong>ÚNICA VEZ</strong> o formulário com seus <strong>DADOS CORRETOS</strong> utilizados na <a href="https://realsbet.com/signup">REALS BET</a>.<br>
+                Caso não tenha conta na Reals Bet, <a href="https://realsbet.com/signup">CADASTRE-SE AQUI!</a>
+            </p> -->
         </div>
 
         <p id="message" class="message" class="<?php echo htmlspecialchars($messageClass); ?>">
-            <?php echo htmlspecialchars($message); ?>
-        </p>
+            <?php echo htmlspecialchars($message); ?></p>
 
         <div id="form-container">
             <?php echo $htmlFormulario; ?>
