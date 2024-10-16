@@ -38,12 +38,14 @@ $csrf_token = $_SESSION['csrf_token'];
 
 try {
     // Consulta os dados do evento, incluindo o status de formulário_aberto
-    $queryUsers = "SELECT id, titulo,interative FROM eventos_premiacao LIMIT 1";
+    $queryUsers = "SELECT id, banner, titulo, imagem, interative FROM eventos_premiacao LIMIT 1";
     $stmtUsers = $pdo->prepare($queryUsers);
     $stmtUsers->execute();
     $result = $stmtUsers->fetch(PDO::FETCH_ASSOC);
 
     if ($result) {
+        // Converte os dados binários da imagem para Base64
+        $titulo = htmlspecialchars($result['titulo'], ENT_QUOTES, 'UTF-8');
 
         // Verifica o estado do formulário
         $formularioAberto = $result['interative'];
@@ -118,7 +120,7 @@ try {
 
 <body class="centro" style="background-image: url(../img/bg.webp); background-repeat: repeat-y;">
 
-    <div class="container">
+    <div class="container" style="margin-top: 30px;">
         <div class="header">
             <h1 class="titulo"><?php echo $titulo; ?></h1>
         </div>
