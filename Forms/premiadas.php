@@ -72,17 +72,6 @@ try {
                         <input type="tel" id="zap" name="zap" placeholder="Informe seu WhatsApp" value="' . (isset($zap) ? htmlspecialchars($zap, ENT_QUOTES, 'UTF-8') : '') . '" required min="1" max="99999999999" oninput="if (this.value.length > 11) this.value = this.value.slice(0, 11);" pattern="\d*" maxlength="11">
                     </div>
 
-                    <h1>ID DA SUA CONTA REALS - <strong class="regras"><em>SOMENTE OS NÚMEROS, NÃO COLOCAR "ID#"</em></strong></h1>
-                    <p>Acesse "MENU" ➜ "CARTEIRA/PERFIL" ➜ DIGITE <strong><em>SOMENTE OS NÚMEROS</em></strong> DA ID QUE APARECER</p>
-                    <div class="imagens">
-                        ' . $imagem . '
-                    </div>
-                    <div class="form-group foto">
-                        <input type="text" id="codigo" name="codigo" placeholder="Digite seu ID aqui" 
-                            value="' . (isset($codigo) ? htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') : '') . '">
-                    </div>
-
-                    <!-- Novos campos adicionados -->
                     <div class="form-group">
                         <input type="text" name="tempo_mercado" id="tempo_mercado" placeholder="Quanto tempo você atua no mercado digital?" required>
                     </div>
@@ -94,6 +83,16 @@ try {
                     </div>
                     <div class="form-group">
                         <input type="number" name="faturamento_maximo" id="faturamento_maximo" placeholder="Qual foi o máximo que já atingiu em um mês?" required>
+                    </div>
+
+                    <h1>ID DA SUA CONTA REALS - <strong class="regras"><em>SOMENTE OS NÚMEROS, NÃO COLOCAR "ID#"</em></strong></h1>
+                    <p>Acesse "MENU" ➜ "CARTEIRA/PERFIL" ➜ DIGITE <strong><em>SOMENTE OS NÚMEROS</em></strong> DA ID QUE APARECER</p>
+                    <div class="imagens">
+                        ' . $imagem . '
+                    </div>
+                    <div class="form-group foto">
+                        <input type="text" id="codigo" name="codigo" placeholder="Digite seu ID aqui" 
+                            value="' . (isset($codigo) ? htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') : '') . '">
                     </div>
 
                     <!-- Adiciona o widget do reCAPTCHA -->
@@ -153,7 +152,8 @@ try {
         </div>
 
         <p id="message" class="message" class="<?php echo htmlspecialchars($messageClass); ?>">
-            <?php echo htmlspecialchars($message); ?></p>
+            <?php echo htmlspecialchars($message); ?>
+        </p>
 
         <div id="form-container">
             <?php echo $htmlFormulario; ?>
