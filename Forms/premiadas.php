@@ -129,7 +129,9 @@ try {
     </div>
     <div class="container">
         <div class="header">
-            <h1 class="titulo"><?php echo $titulo; ?></h1>
+            <h1 class="titulo">🚀 Reals Bet - Casa Regulamentada🚀<br> Convenção Digital 
+
+</h1>
         </div>
 
         <p id="message" class="message" class="<?php echo htmlspecialchars($messageClass); ?>">
