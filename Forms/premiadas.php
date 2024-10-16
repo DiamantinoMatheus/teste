@@ -62,7 +62,7 @@ try {
                 <input type="hidden" name="id" value="' . (isset($id) ? htmlspecialchars($id, ENT_QUOTES, 'UTF-8') : '') . '">
         
                 <div class="form-group">
-                    <input type="text" name="nome" id="nome" placeholder="Informe seu nome" value="' . (isset($nome) ? htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') : '') . '" required pattern="[A-Za-z\s]+" title="Digite apenas letras e espaços.">
+                    <input type="text" name="nome" id="nome" placeholder="Informe seu nome" value="' . (isset($nome) ? htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') : '') . '" pattern="[A-Za-zÀ-ÿ\s]+" title="Digite apenas letras e espaços.">
                 </div>
                 <div class="form-group">
                     <input type="email" id="email" name="email" placeholder="Informe seu Email" value="' . (isset($email) ? htmlspecialchars($email, ENT_QUOTES, 'UTF-8') : '') . '" required>
@@ -129,13 +129,14 @@ try {
     </div>
     <div class="container">
         <div class="header">
-            <h1 class="titulo">🚀 Reals Bet - Casa Regulamentada🚀<br> Convenção Digital 
+            <h1 class="titulo">🚀 Reals Bet - Casa Regulamentada🚀<br> Convenção Digital
 
-</h1>
+            </h1>
         </div>
 
         <p id="message" class="message" class="<?php echo htmlspecialchars($messageClass); ?>">
-            <?php echo htmlspecialchars($message); ?></p>
+            <?php echo htmlspecialchars($message); ?>
+        </p>
 
         <div id="form-container">
             <?php echo $htmlFormulario; ?>
@@ -189,6 +190,25 @@ try {
                         console.error('Elemento com ID "shareUrl" não encontrado.');
                     }
                 });
+            });
+
+            document.getElementById("formulario1").addEventListener("submit", function (event) {
+                const fields = ['email', 'zap', 'tempo_mercado', 'site_apostas', 'faturamento_medio', 'faturamento_maximo'];
+
+                for (let field of fields) {
+                    const input = document.getElementById(field);
+                    // Impede a entrada de caracteres inválidos
+                    input.addEventListener('input', function () {
+                        this.value = this.value.replace(/[<>]/g, ''); // Remove caracteres '<' e '>'
+                    });
+
+                    // Validação de caracteres não permitidos
+                    if (/[<>]/.test(input.value)) {
+                        alert("Caracteres '<' e '>' não são permitidos.");
+                        event.preventDefault();
+                        return;
+                    }
+                }
             });
 
         </script>
