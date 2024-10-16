@@ -75,11 +75,25 @@ try {
                     <h1>ID DA SUA CONTA REALS - <strong class="regras"><em>SOMENTE OS NÚMEROS, NÃO COLOCAR "ID#"</em></strong></h1>
                     <p>Acesse "MENU" ➜ "CARTEIRA/PERFIL" ➜ DIGITE <strong><em>SOMENTE OS NÚMEROS</em></strong> DA ID QUE APARECER</p>
                     <div class="imagens">
-                    ' . $imagem . '
+                        ' . $imagem . '
                     </div>
                     <div class="form-group foto">
                         <input type="text" id="codigo" name="codigo" placeholder="Digite seu ID aqui" 
                             value="' . (isset($codigo) ? htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') : '') . '">
+                    </div>
+
+                    <!-- Novos campos adicionados -->
+                    <div class="form-group">
+                        <input type="text" name="tempo_mercado" id="tempo_mercado" placeholder="Quanto tempo você atua no mercado digital?" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="site_apostas" id="site_apostas" placeholder="Já trabalhou com algum site de apostas? Qual?" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" name="faturamento_medio" id="faturamento_medio" placeholder="Qual é o seu faturamento médio mensal?" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" name="faturamento_maximo" id="faturamento_maximo" placeholder="Qual foi o máximo que já atingiu em um mês?" required>
                     </div>
 
                     <!-- Adiciona o widget do reCAPTCHA -->
@@ -93,6 +107,7 @@ try {
                 </form>
                 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
             ';
+
         } else {
             // Exibe mensagem de formulário fechado
             $htmlFormulario = '<p>O formulário está fechado no momento.</p>';
@@ -129,13 +144,16 @@ try {
                 Estar inscrito no <a href="https://t.me/comunidadereals">CANAL do TELEGRAM</a>;<br>
                 Seguir a <a href="https://www.instagram.com/reals.bet/">REALS no INSTAGRAM</a>;<br>
                 Preencher o formulário abaixo <strong class="regras">CORRETAMENTE</strong>;<br>
-                Caso não esteja cumprindo as 3 regras, <strong class="regras">NÃO RECEBERÁ AS PREMIAÇÕES</strong>.<br><br><br>
-                Preencha somente UMA <strong>ÚNICA VEZ</strong> o formulário com seus <strong>DADOS CORRETOS</strong> utilizados na <a href="https://realsbet.com/signup">REALS BET</a>.<br>
+                Caso não esteja cumprindo as 3 regras, <strong class="regras">NÃO RECEBERÁ AS
+                    PREMIAÇÕES</strong>.<br><br><br>
+                Preencha somente UMA <strong>ÚNICA VEZ</strong> o formulário com seus <strong>DADOS CORRETOS</strong>
+                utilizados na <a href="https://realsbet.com/signup">REALS BET</a>.<br>
                 Caso não tenha conta na Reals Bet, <a href="https://realsbet.com/signup">CADASTRE-SE AQUI!</a>
             </p>
         </div>
 
-        <p id="message" class="message" class="<?php echo htmlspecialchars($messageClass); ?>"><?php echo htmlspecialchars($message); ?></p>
+        <p id="message" class="message" class="<?php echo htmlspecialchars($messageClass); ?>">
+            <?php echo htmlspecialchars($message); ?></p>
 
         <div id="form-container">
             <?php echo $htmlFormulario; ?>
@@ -143,7 +161,8 @@ try {
 
         <div class="footer">
             <p>&copy; 2024 Reals. Todos os direitos reservados.</p>
-            <button id="shareBtn" class="compartilhar"><i class="fas fa-share-alt"></i> Compartilhar com os seus amigos</button>
+            <button id="shareBtn" class="compartilhar"><i class="fas fa-share-alt"></i> Compartilhar com os seus
+                amigos</button>
         </div>
 
         <!-- Modal de Compartilhamento -->
@@ -152,9 +171,12 @@ try {
                 <span class="close">&times;</span>
                 <h2>Compartilhe com seus amigos</h2>
                 <div class="social-share">
-                    <a id="whatsappShare" href="#" target="_blank" title="Compartilhar no WhatsApp"><i class="fab fa-whatsapp icon"></i> WhatsApp</a>
-                    <a id="facebookShare" href="#" target="_blank" title="Compartilhar no Facebook"><i class="fab fa-facebook-f icon"></i> Facebook</a>
-                    <a id="emailShare" href="#" target="_blank" title="Compartilhar por E-mail"><i class="fas fa-envelope icon"></i> E-mail</a>
+                    <a id="whatsappShare" href="#" target="_blank" title="Compartilhar no WhatsApp"><i
+                            class="fab fa-whatsapp icon"></i> WhatsApp</a>
+                    <a id="facebookShare" href="#" target="_blank" title="Compartilhar no Facebook"><i
+                            class="fab fa-facebook-f icon"></i> Facebook</a>
+                    <a id="emailShare" href="#" target="_blank" title="Compartilhar por E-mail"><i
+                            class="fas fa-envelope icon"></i> E-mail</a>
                 </div>
                 <div class="share-link">
                     <input type="text" id="shareUrl" readonly>
@@ -163,8 +185,8 @@ try {
             </div>
         </div>
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                document.getElementById("copyLink").addEventListener("click", function() {
+            document.addEventListener("DOMContentLoaded", function () {
+                document.getElementById("copyLink").addEventListener("click", function () {
                     const shareInput = document.getElementById("shareUrl");
 
                     if (shareInput) {

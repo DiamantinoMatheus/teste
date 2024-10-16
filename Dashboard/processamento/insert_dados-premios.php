@@ -15,8 +15,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     $codigo = filter_input(INPUT_POST, 'codigo', FILTER_SANITIZE_SPECIAL_CHARS);
     $zap = filter_input(INPUT_POST, 'zap', FILTER_SANITIZE_SPECIAL_CHARS); // WhatsApp
+    $tempo_mercado = filter_input(INPUT_POST, 'tempo_mercado', FILTER_SANITIZE_SPECIAL_CHARS); // Novo campo
+    $site_apostas = filter_input(INPUT_POST, 'site_apostas', FILTER_SANITIZE_SPECIAL_CHARS); // Novo campo
+    $faturamento_medio = filter_input(INPUT_POST, 'faturamento_medio', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION); // Novo campo
+    $faturamento_maximo = filter_input(INPUT_POST, 'faturamento_maximo', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION); // Novo campo
 
-    if (!$nome || !$email || !$codigo || !$zap) {
+    // Validações para os novos campos
+    if (!$nome || !$email || !$codigo || !$zap || !$tempo_mercado || !$site_apostas || $faturamento_medio === false || $faturamento_maximo === false) {
         $_SESSION['message'] = 'Dados inválidos. Por favor, preencha todos os campos corretamente.';
         $_SESSION['messageClass'] = 'error';
         header("Location: ../../Forms/premiadas.php");
@@ -29,7 +34,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $secret_key = 'sua_chave_super_secreta'; // Substitua por uma chave forte e segura
 
     // Função para criptografar dados
-    function encrypt_data($data, $key) {
+    function encrypt_data($data, $key)
+    {
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
         $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
         return base64_encode($encrypted . '::' . $iv);
@@ -57,11 +63,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // Inserindo os dados criptografados no banco de dados
-        $stmt = $conn->prepare("INSERT INTO premiacao (nome, email, codigo, whatsapp) VALUES (:nome, :email, :codigo, :zap)");
+        $stmt = $conn->prepare("INSERT INTO premiacao (nome, email, codigo, whatsapp, tempo_mercado, site_apostas, faturamento_medio, faturamento_maximo) VALUES (:nome, :email, :codigo, :zap, :tempo_mercado, :site_apostas, :faturamento_medio, :faturamento_maximo)");
         $stmt->bindParam(':nome', $nome);
         $stmt->bindParam(':email', $email_criptografado); // Insere o e-mail criptografado
         $stmt->bindParam(':codigo', $codigo);
         $stmt->bindParam(':zap', $zap); // Insere o WhatsApp sem criptografia
+        $stmt->bindParam(':tempo_mercado', $tempo_mercado); // Insere o tempo de mercado
+        $stmt->bindParam(':site_apostas', $site_apostas); // Insere o site de apostas
+        $stmt->bindParam(':faturamento_medio', $faturamento_medio); // Insere o faturamento médio
+        $stmt->bindParam(':faturamento_maximo', $faturamento_maximo); // Insere o faturamento máximo
 
         if ($stmt->execute()) {
             $_SESSION['message'] = 'Formulário enviado com sucesso!';
@@ -78,3 +88,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header("Location: ../../Forms/premiadas.php");
     exit();
 }
+?>

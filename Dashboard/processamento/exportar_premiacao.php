@@ -17,8 +17,9 @@ require_once __DIR__ . '/../../back-php/conexao.php'; // Ajuste o caminho confor
 // Chave de criptografia (mantenha isso seguro, use uma variável de ambiente)
 $secret_key = 'sua_chave_super_secreta'; // NÃO armazene isso diretamente no código em produção!
 
-// Função para descriptografar o e-mail (igual à que criamos anteriormente)
-function decrypt_email($encrypted_email, $key) {
+// Função para descriptografar o e-mail
+function decrypt_email($encrypted_email, $key)
+{
     list($encrypted_data, $iv) = explode('::', base64_decode($encrypted_email), 2);
     return openssl_decrypt($encrypted_data, 'aes-256-cbc', $key, 0, $iv);
 }
@@ -29,7 +30,17 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Consulta para selecionar os dados da tabela 'premiacao'
-    $sql = "SELECT nome, email, codigo, whatsapp, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at FROM premiacao"; // Ajuste a tabela conforme necessário
+    $sql = "SELECT nome, 
+                   email, 
+                   codigo, 
+                   whatsapp, 
+                   tempo_mercado, 
+                   site_apostas, 
+                   faturamento_medio, 
+                   faturamento_maximo, 
+                   DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at 
+            FROM premiacao"; // Ajuste a tabela conforme necessário
+
     $stmt = $conn->prepare($sql);
     $stmt->execute();
 
@@ -44,13 +55,13 @@ try {
     fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
     // Escreve o cabeçalho do CSV
-    fputcsv($output, ['Nome', 'Email', 'Codigo', 'Whatsapp' ,'Data/Hora'], ';'); // Usando ponto e vírgula como delimitador
+    fputcsv($output, ['Nome', 'Email', 'Codigo', 'Whatsapp', 'Tempo de Mercado', 'Site de Apostas', 'Faturamento Médio', 'Faturamento Máximo', 'Data/Hora'], ';'); // Usando ponto e vírgula como delimitador
 
     // Escreve os dados no CSV
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         // Descriptografa o e-mail antes de exportar
         $row['email'] = decrypt_email($row['email'], $secret_key);
-        
+
         // Escreve a linha no CSV
         fputcsv($output, $row, ';'); // Usando ponto e vírgula como delimitador
     }
