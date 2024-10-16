@@ -24,9 +24,9 @@ if (!isset($pdo)) {
 
 
 // Inicializa variáveis para evitar erros de variável não definida
-$banner = ' ';
-$titulo = ' ';
-$imagem = ' ';
+$banner = '';
+$titulo = 'Título não disponível';
+$imagem = '<p>Imagem não disponível</p>';
 $csrf_token = '';
 $htmlFormulario = '<p>O formulário não está disponível no momento.</p>'; // Valor padrão para evitar erros de variável não definida
 
@@ -57,47 +57,49 @@ try {
             $secretKey = '6LdcnV0qAAAAAO0dhcpdmD_65NLVsz4doG8L5Xly'; // Substitua pela sua secret key do reCAPTCHA
 
             $htmlFormulario = '
-                <form id="formulario1" class="form" method="POST" action="../Dashboard/processamento/insert_dados-premios.php" enctype="multipart/form-data" onsubmit="return handleSubmit()">
-                    <input type="hidden" name="csrf_token" value="' . htmlspecialchars($csrf_token, ENT_QUOTES, 'UTF-8') . '">
+            <form id="formulario1" class="form" method="POST" action="../Dashboard/processamento/insert_dados-premios.php" enctype="multipart/form-data" onsubmit="return handleSubmit()">
+                <input type="hidden" name="csrf_token" value="' . htmlspecialchars($csrf_token, ENT_QUOTES, 'UTF-8') . '">
+                <input type="hidden" name="id" value="' . (isset($id) ? htmlspecialchars($id, ENT_QUOTES, 'UTF-8') : '') . '">
+        
+                <div class="form-group">
+                    <input type="text" name="nome" id="nome" placeholder="Informe seu nome" value="' . (isset($nome) ? htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') : '') . '" required pattern="[A-Za-z\s]+" title="Digite apenas letras e espaços.">
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" name="email" placeholder="Informe seu Email" value="' . (isset($email) ? htmlspecialchars($email, ENT_QUOTES, 'UTF-8') : '') . '" required>
+                </div>
+        
+                <div class="form-group">
+                    <input type="tel" id="zap" name="zap" placeholder="Informe seu WhatsApp" value="' . (isset($zap) ? htmlspecialchars($zap, ENT_QUOTES, 'UTF-8') : '') . '" required min="1" max="99999999999" oninput="if (this.value.length > 11) this.value = this.value.slice(0, 11);" pattern="\d*" maxlength="11">
+                </div>
+        
+                <div class="form-group">
+                    <input type="text" id="tempo_mercado" name="tempo_mercado" placeholder="Tempo no mercado" value="' . (isset($tempo_mercado) ? htmlspecialchars($tempo_mercado, ENT_QUOTES, 'UTF-8') : '') . '" required>
+                </div>
+        
+                <div class="form-group">
+                    <input type="text" id="site_apostas" name="site_apostas" placeholder="Site de apostas" value="' . (isset($site_apostas) ? htmlspecialchars($site_apostas, ENT_QUOTES, 'UTF-8') : '') . '" required>
+                </div>
+        
+                <div class="form-group">
+                    <input type="number" id="faturamento_medio" name="faturamento_medio" placeholder="Faturamento médio" value="' . (isset($faturamento_medio) ? htmlspecialchars($faturamento_medio, ENT_QUOTES, 'UTF-8') : '') . '" required step="0.01">
+                </div>
+        
+                <div class="form-group">
+                    <input type="number" id="faturamento_maximo" name="faturamento_maximo" placeholder="Faturamento máximo" value="' . (isset($faturamento_maximo) ? htmlspecialchars($faturamento_maximo, ENT_QUOTES, 'UTF-8') : '') . '" required step="0.01">
+                </div>
+        
+                <!-- Adiciona o widget do reCAPTCHA -->
+                <div class="form-group">
+                    <div class="g-recaptcha" data-sitekey="' . $siteKey . '"></div>
+                </div>
+        
+                <div class="form-group">
+                    <button type="submit">Enviar</button>
+                </div>
+            </form>
+            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        ';
 
-                    <div class="form-group">
-                        <input type="text" name="nome" id="nome" placeholder="Informe seu nome" value="' . (isset($nome) ? htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') : '') . '" required pattern="[A-Za-z\s]+" title="Digite apenas letras e espaços.">
-                    </div>
-                    <div class="form-group">
-                        <input type="email" id="email" name="email" placeholder="Informe seu Email" value="' . (isset($email) ? htmlspecialchars($email, ENT_QUOTES, 'UTF-8') : '') . '" required>
-                    </div>
-
-                    <div class="form-group">
-                        <input type="tel" id="whatsapp" name="whatsapp" placeholder="Informe seu WhatsApp" value="' . (isset($whatsapp) ? htmlspecialchars($whatsapp, ENT_QUOTES, 'UTF-8') : '') . '" required pattern="\d*" maxlength="11" title="Digite um número de WhatsApp válido.">
-                    </div>
-
-                    <div class="form-group">
-                        <input type="text" name="tempo_mercado" id="tempo_mercado" placeholder="Tempo no mercado" value="' . (isset($tempo_mercado) ? htmlspecialchars($tempo_mercado, ENT_QUOTES, 'UTF-8') : '') . '" required>
-                    </div>
-
-                    <div class="form-group">
-                        <input type="text" name="site_apostas" id="site_apostas" placeholder="Site de apostas" value="' . (isset($site_apostas) ? htmlspecialchars($site_apostas, ENT_QUOTES, 'UTF-8') : '') . '" required>
-                    </div>
-
-                    <div class="form-group">
-                        <input type="number" step="0.01" name="faturamento_medio" id="faturamento_medio" placeholder="Faturamento médio" value="' . (isset($faturamento_medio) ? htmlspecialchars($faturamento_medio, ENT_QUOTES, 'UTF-8') : '') . '" required>
-                    </div>
-
-                    <div class="form-group">
-                        <input type="number" step="0.01" name="faturamento_maximo" id="faturamento_maximo" placeholder="Faturamento máximo" value="' . (isset($faturamento_maximo) ? htmlspecialchars($faturamento_maximo, ENT_QUOTES, 'UTF-8') : '') . '" required>
-                    </div>
-
-                    <!-- Adiciona o widget do reCAPTCHA -->
-                    <div class="form-group">
-                        <div class="g-recaptcha" data-sitekey="' . $siteKey . '"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <button type="submit">Enviar</button>
-                    </div>
-                </form>
-                <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-            ';
         } else {
             // Exibe mensagem de formulário fechado
             $htmlFormulario = '<p>O formulário está fechado no momento.</p>';
@@ -126,17 +128,8 @@ try {
     <div class="banner">
     </div>
     <div class="container">
-        <div class="header" style="margin-bottom: 30px;">
+        <div class="header">
             <h1 class="titulo"><?php echo $titulo; ?></h1>
-            <!-- <h2><strong class="regras1"><em>REGRAS:</em></strong></h2>
-            <p>
-                Estar inscrito no <a href="https://t.me/comunidadereals">CANAL do TELEGRAM</a>;<br>
-                Seguir a <a href="https://www.instagram.com/reals.bet/">REALS no INSTAGRAM</a>;<br>
-                Preencher o formulário abaixo <strong class="regras">CORRETAMENTE</strong>;<br>
-                Caso não esteja cumprindo as 3 regras, <strong class="regras">NÃO RECEBERÁ AS PREMIAÇÕES</strong>.<br><br><br>
-                Preencha somente UMA <strong>ÚNICA VEZ</strong> o formulário com seus <strong>DADOS CORRETOS</strong> utilizados na <a href="https://realsbet.com/signup">REALS BET</a>.<br>
-                Caso não tenha conta na Reals Bet, <a href="https://realsbet.com/signup">CADASTRE-SE AQUI!</a>
-            </p> -->
         </div>
 
         <p id="message" class="message" class="<?php echo htmlspecialchars($messageClass); ?>">
@@ -195,19 +188,6 @@ try {
                     }
                 });
             });
-
-            function validarID(input) {
-                // Bloquear caracteres não numéricos e simbolos < e >
-                input.value = input.value.replace(/[^0-9]/g, '');
-
-                // Verificar se o comprimento é 10
-                const errorSpan = document.getElementById('codigo-error');
-                if (input.value.length === 10) {
-                    errorSpan.style.display = 'none'; // Ocultar erro
-                } else {
-                    errorSpan.style.display = 'block'; // Mostrar erro
-                }
-            }
 
         </script>
         <script src="comands.js"></script>
