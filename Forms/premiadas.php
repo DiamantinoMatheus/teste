@@ -38,16 +38,12 @@ $csrf_token = $_SESSION['csrf_token'];
 
 try {
     // Consulta os dados do evento, incluindo o status de formulário_aberto
-    $queryUsers = "SELECT id, banner, titulo, imagem, interative FROM eventos_premiacao LIMIT 1";
+    $queryUsers = "SELECT id, titulo,interative FROM eventos_premiacao LIMIT 1";
     $stmtUsers = $pdo->prepare($queryUsers);
     $stmtUsers->execute();
     $result = $stmtUsers->fetch(PDO::FETCH_ASSOC);
 
     if ($result) {
-        // Converte os dados binários da imagem para Base64
-        $banner = $result['banner'] ? '<img src="data:image/jpeg;base64,' . base64_encode($result['banner']) . '" alt="Banner do Evento">' : '';
-        $imagem = $result['imagem'] ? '<img src="data:image/jpeg;base64,' . base64_encode($result['imagem']) . '" alt="Imagem do Evento">' : '';
-        $titulo = htmlspecialchars($result['titulo'], ENT_QUOTES, 'UTF-8');
 
         // Verifica o estado do formulário
         $formularioAberto = $result['interative'];
@@ -83,16 +79,6 @@ try {
                     </div>
                     <div class="form-group">
                         <input type="number" name="faturamento_maximo" id="faturamento_maximo" placeholder="Qual foi o máximo que já atingiu em um mês?" required>
-                    </div>
-
-                    <h1>ID DA SUA CONTA REALS - <strong class="regras"><em>SOMENTE OS NÚMEROS, NÃO COLOCAR "ID#"</em></strong></h1>
-                    <p>Acesse "MENU" ➜ "CARTEIRA/PERFIL" ➜ DIGITE <strong><em>SOMENTE OS NÚMEROS</em></strong> DA ID QUE APARECER</p>
-                    <div class="imagens">
-                        ' . $imagem . '
-                    </div>
-                    <div class="form-group foto">
-                        <input type="text" id="codigo" name="codigo" placeholder="Digite seu ID aqui" 
-                            value="' . (isset($codigo) ? htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') : '') . '">
                     </div>
 
                     <!-- Adiciona o widget do reCAPTCHA -->
@@ -132,23 +118,9 @@ try {
 
 <body class="centro" style="background-image: url(../img/bg.webp); background-repeat: repeat-y;">
 
-    <div class="banner">
-        <?php echo $banner; ?>
-    </div>
     <div class="container">
         <div class="header">
             <h1 class="titulo"><?php echo $titulo; ?></h1>
-            <h2><strong class="regras1"><em>REGRAS:</em></strong></h2>
-            <p>
-                Estar inscrito no <a href="https://t.me/comunidadereals">CANAL do TELEGRAM</a>;<br>
-                Seguir a <a href="https://www.instagram.com/reals.bet/">REALS no INSTAGRAM</a>;<br>
-                Preencher o formulário abaixo <strong class="regras">CORRETAMENTE</strong>;<br>
-                Caso não esteja cumprindo as 3 regras, <strong class="regras">NÃO RECEBERÁ AS
-                    PREMIAÇÕES</strong>.<br><br><br>
-                Preencha somente UMA <strong>ÚNICA VEZ</strong> o formulário com seus <strong>DADOS CORRETOS</strong>
-                utilizados na <a href="https://realsbet.com/signup">REALS BET</a>.<br>
-                Caso não tenha conta na Reals Bet, <a href="https://realsbet.com/signup">CADASTRE-SE AQUI!</a>
-            </p>
         </div>
 
         <p id="message" class="message" class="<?php echo htmlspecialchars($messageClass); ?>">
