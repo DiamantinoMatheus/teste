@@ -11,6 +11,9 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
+// Definindo o fuso horário correto no PHP
+date_default_timezone_set('America/Sao_Paulo'); // Ajuste para o fuso desejado
+
 // Inclui o arquivo de conexão
 require_once __DIR__ . '/../../back-php/conexao.php'; // Ajuste o caminho conforme necessário
 
@@ -28,6 +31,9 @@ try {
     // Conexão com o banco de dados
     $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Definir o fuso horário do MySQL
+    $conn->exec("SET time_zone = '-03:00'"); // Ajuste para o fuso horário de São Paulo
 
     // Consulta para selecionar os dados da tabela 'premiacao'
     $sql = "SELECT nome, 
