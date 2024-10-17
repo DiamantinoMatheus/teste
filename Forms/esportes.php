@@ -74,19 +74,19 @@ try {
                     </div>
 
                     <div class="form-group">
-                        <h4> Real Madrid x Villareal - 05/10</h4>
+                        <h4> Celta de Vigo x Real Madrid - 19/10 </h4>
                         <input type="text" id="villareal" name="villareal" placeholder="Placar exato - Exemplo placar 2x5" 
                             value="' . (isset($villareal) ? htmlspecialchars($villareal, ENT_QUOTES, 'UTF-8') : '') . '" 
                         oninput="mascaraPlacar(this)" maxlength="3" pattern="\d+x\d+" required>
                     </div>
                     <div class="form-group">
-                        <h4>Bahia x Flamengo - 05/10</h4>
+                        <h4>Internacional x Grêmio - 19/10</h4>
                         <input type="text" id="bahia" name="bahia" placeholder="Placar exato - Exemplo placar 3x1" 
                             value="' . (isset($bahia) ? htmlspecialchars($bahia, ENT_QUOTES, 'UTF-8') : '') . '" 
                             oninput="mascaraPlacar(this)" maxlength="3" pattern="\d+x\d+" required>
                     </div>
                     <div class="form-group">
-                        <h4>RB Bragantino x Palmeiras - 05/10</h4>
+                        <h4>Vasco da gama x Atlético Mineiro - 19/10</h4>
                         <input type="text" id="palmeiras" name="palmeiras" placeholder="Placar exato - Exemplo placar 4x4" 
                             value="' . (isset($palmeiras) ? htmlspecialchars($palmeiras, ENT_QUOTES, 'UTF-8') : '') . '" 
                             oninput="mascaraPlacar(this)" maxlength="3" pattern="\d+x\d+" required>
@@ -101,10 +101,7 @@ try {
                         <input type="text" id="codigo" name="codigo" placeholder="Digite seu ID aqui" 
                             value="' . (isset($codigo) ? htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') : '') . '">
                     </div>
-                    <!-- Adiciona o widget do reCAPTCHA -->
-                    <div class="form-group">
-                        <div class="g-recaptcha" data-sitekey="' . $siteKey . '"></div>
-                    </div>
+                    
                     <div class="form-group">
                         <button type="submit">Enviar</button>
                     </div>

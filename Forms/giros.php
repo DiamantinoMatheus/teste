@@ -83,6 +83,8 @@ try {
         </div>
     </form>
     
+    <!-- Adiciona o script do reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 ';
 
             // Processamento do formulário

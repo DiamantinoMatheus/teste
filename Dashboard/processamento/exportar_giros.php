@@ -23,13 +23,16 @@ function decrypt_email($encrypted_email, $key) {
     return openssl_decrypt($encrypted_data, 'aes-256-cbc', $key, 0, $iv);
 }
 
+// Define o fuso horário para São Paulo
+date_default_timezone_set('America/Sao_Paulo');
+
 try {
     // Conexão com o banco de dados
     $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Consulta para selecionar os dados da tabela 'giros'
-    $sql = "SELECT nome, email, codigo, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at FROM giros"; // Ajuste a tabela conforme necessário
+    $sql = "SELECT nome, email, codigo, created_at FROM giros"; // Ajuste a tabela conforme necessário
     $stmt = $conn->prepare($sql);
     $stmt->execute();
 
@@ -50,7 +53,12 @@ try {
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         // Descriptografa o e-mail antes de exportar
         $row['email'] = decrypt_email($row['email'], $secret_key);
-        
+
+        // Se os dados estão em UTC, converta para o horário de São Paulo
+        $dateTime = new DateTime($row['created_at'], new DateTimeZone('UTC'));
+        $dateTime->setTimezone(new DateTimeZone('America/Sao_Paulo'));
+        $row['created_at'] = $dateTime->format('d/m/Y H:i:s');
+
         // Escreve a linha no CSV
         fputcsv($output, $row, ';'); // Usando ponto e vírgula como delimitador
     }

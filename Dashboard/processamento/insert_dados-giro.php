@@ -26,7 +26,6 @@ function decrypt_email($encrypted_email, $key)
 
 // Verifique se o formulário foi enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
     // Verifique se o token CSRF enviado corresponde ao token na sessão
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['message'] = 'Erro: Token CSRF inválido.';

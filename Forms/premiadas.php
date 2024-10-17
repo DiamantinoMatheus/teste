@@ -88,10 +88,13 @@ try {
                     <input type="number" id="faturamento_maximo" name="faturamento_maximo" placeholder="Faturamento máximo" value="' . (isset($faturamento_maximo) ? htmlspecialchars($faturamento_maximo, ENT_QUOTES, 'UTF-8') : '') . '" required step="0.01">
                 </div>
         
+                
+        
                 <div class="form-group">
                     <button type="submit">Enviar</button>
                 </div>
             </form>
+            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
         ';
 
         } else {

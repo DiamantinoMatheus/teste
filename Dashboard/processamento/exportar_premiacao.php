@@ -12,7 +12,7 @@ if (!isset($_SESSION['email'])) {
 }
 
 // Definindo o fuso horário correto no PHP
-date_default_timezone_set('America/Sao_Paulo'); // Ajuste para o fuso desejado
+date_default_timezone_set(timezoneId: 'America/Sao_Paulo'); // Ajuste para o fuso desejado
 
 // Inclui o arquivo de conexão
 require_once __DIR__ . '/../../back-php/conexao.php'; // Ajuste o caminho conforme necessário
