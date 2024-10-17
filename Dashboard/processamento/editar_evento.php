@@ -168,9 +168,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception('Erro ao atualizar o evento na tabela eventos_ticket.');
         }
 
-        // Redirecionamento comentado para depuração
-        // header("Location: ../dash.php");
-        // exit();
+        header("Location: ../dash.php");
+        exit();
     } catch (PDOException $e) {
         die('Erro ao conectar ao banco de dados: ' . $e->getMessage());
     } catch (Exception $e) {

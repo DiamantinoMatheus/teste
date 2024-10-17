@@ -2,6 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['message'] = 'Erro: Token CSRF inválido.';
@@ -39,8 +40,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         return base64_encode($encrypted . '::' . $iv);
     }
 
-    // Criptografando o e-mail
+    // Criptografando os dados
+    $nome_criptografado = encrypt_data($nome, $secret_key);
     $email_criptografado = encrypt_data($email, $secret_key);
+    $zap_criptografado = encrypt_data($zap, $secret_key);
+    $tempo_mercado_criptografado = encrypt_data($tempo_mercado, $secret_key);
 
     try {
         $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password);
@@ -61,13 +65,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Inserindo os dados criptografados no banco de dados
         $stmt = $conn->prepare("INSERT INTO premiacao (nome, email, whatsapp, tempo_mercado, site_apostas, faturamento_medio, faturamento_maximo) VALUES (:nome, :email, :zap, :tempo_mercado, :site_apostas, :faturamento_medio, :faturamento_maximo)");
-        $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':nome', $nome_criptografado); // Insere o nome criptografado
         $stmt->bindParam(':email', $email_criptografado); // Insere o e-mail criptografado
-        $stmt->bindParam(':zap', $zap); // Insere o WhatsApp sem criptografia
-        $stmt->bindParam(':tempo_mercado', $tempo_mercado);
-        $stmt->bindParam(':site_apostas', $site_apostas);
-        $stmt->bindParam(':faturamento_medio', $faturamento_medio);
-        $stmt->bindParam(':faturamento_maximo', $faturamento_maximo);
+        $stmt->bindParam(':zap', $zap_criptografado); // Insere o WhatsApp criptografado
+        $stmt->bindParam(':tempo_mercado', $tempo_mercado_criptografado); // Insere o tempo de mercado criptografado
+        $stmt->bindParam(':site_apostas', $site_apostas); // Insere o site de apostas sem criptografia
+        $stmt->bindParam(':faturamento_medio', $faturamento_medio); // Insere o faturamento médio sem criptografia
+        $stmt->bindParam(':faturamento_maximo', $faturamento_maximo); // Insere o faturamento máximo sem criptografia
 
         if ($stmt->execute()) {
             $_SESSION['message'] = 'Formulário enviado com sucesso!';
@@ -84,3 +88,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header("Location: ../../Forms/premiadas.php");
     exit();
 }
+?>
