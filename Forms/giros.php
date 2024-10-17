@@ -78,18 +78,11 @@ try {
                 value="' . (isset($codigo) ? htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') : '') . '">
         </div>
 
-        <!-- Adiciona o widget do reCAPTCHA -->
-        <div class="form-group">
-            <div class="g-recaptcha" data-sitekey="' . $siteKey . '"></div>
-        </div>
-
         <div class="form-group">
             <button type="submit">Enviar</button>
         </div>
     </form>
     
-    <!-- Adiciona o script do reCAPTCHA -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 ';
 
             // Processamento do formulário
@@ -252,7 +245,7 @@ function validarID($id) {
                 }
             }
         </script>
-        <script src="comands.js"></script>
+        <script src="comand.js"></script>
 </body>
 
 </html>

@@ -62,28 +62,23 @@ try {
                     <input type="hidden" name="id" value="' . (isset($id) ? htmlspecialchars($id, ENT_QUOTES, 'UTF-8') : '') . '">
 
                     <div class="form-group">
-                        <label for="rg">RG:</label>
-                        <input type="text" name="rg" id="rg" placeholder="Informe seu RG" value="' . (isset($rg) ? htmlspecialchars($rg, ENT_QUOTES, 'UTF-8') : '') . '" required maxlength="20">
+                        <label for="rg">RG</label>
+                        <input type="text" name="rg" id="rg" placeholder="Informe seu RG" maxlength="12"  oninput="aplicarMascaraRG(this)" required>                    
                     </div>
 
                     <div class="form-group">
-                        <label for="nome">Nome Completo:</label>
+                        <label for="nome">Nome Completo</label>
                         <input type="text" name="nome" id="nome" placeholder="Informe seu nome completo" value="' . (isset($nome) ? htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') : '') . '" required maxlength="100">
                     </div>
 
                     <div class="form-group">
-                        <label for="endereco">Endereço:</label>
+                        <label for="endereco">Endereço</label>
                         <input type="text" name="endereco" id="endereco" placeholder="Informe seu endereço" value="' . (isset($endereco) ? htmlspecialchars($endereco, ENT_QUOTES, 'UTF-8') : '') . '" maxlength="150">
                     </div>
 
                     <div class="form-group">
-                        <label for="instagram">Instagram (@):</label>
+                        <label for="instagram">Instagram (@)</label>
                         <input type="text" name="instagram" id="instagram" placeholder="Informe seu Instagram" value="' . (isset($instagram) ? htmlspecialchars($instagram, ENT_QUOTES, 'UTF-8') : '') . '" maxlength="50">
-                    </div>
-
-                    <!-- Adiciona o widget do reCAPTCHA -->
-                    <div class="form-group">
-                        <div class="g-recaptcha" data-sitekey="' . $siteKey . '"></div>
                     </div>
 
                     <div class="form-group">
@@ -206,7 +201,26 @@ try {
                     errorSpan.style.display = 'block'; // Mostrar erro
                 }
             }
+            function aplicarMascaraRG(element) {
+                let rg = element.value;
 
+                // Remove tudo que não é dígito
+                rg = rg.replace(/\D/g, '');
+
+                // Aplica a máscara: 99.999.999-9
+                if (rg.length > 2) {
+                    rg = rg.replace(/^(\d{2})(\d)/, '$1.$2');
+                }
+                if (rg.length > 6) {
+                    rg = rg.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+                }
+                if (rg.length > 10) {
+                    rg = rg.replace(/^(\d{2})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3-$4');
+                }
+
+                // Atualiza o valor do campo com a máscara aplicada
+                element.value = rg;
+            }
         </script>
         <script src="comands.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

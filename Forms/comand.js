@@ -28,7 +28,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const formUrls = [
         { id: 'formulario1', url: '../Dashboard/processamento/obterStatusFormulario1.php' },
         { id: 'formulario', url: '../Dashboard/processamento/obterStatusFormulario.php' },
-        { id: 'formulario2', url: '../Dashboard/processamento/obterStatusFormulario2.php' }
+        { id: 'formulario2', url: '../Dashboard/processamento/obterStatusFormulario2.php' },
+        { id: 'formulario5', url: '../Dashboard/processamento/obterStatusFormulario5.php' },
     ];
 
     formUrls.forEach(({ id, url }) => verificarDisponibilidadeFormulario(id, url));
@@ -94,15 +95,3 @@ document.getElementById('codigo').addEventListener('input', function (e) {
     // Remove letras e os caracteres indesejados, incluindo o hífen (-)
     this.value = this.value.replace(/[a-zA-Z.,()$¨%@!&*/:€£¥•‘’”“[\]~´`-ÇçáàéèÈÁÉÈÀóòÓÒúùÚÙÍÌíì'"+=-_^#@{}/|;]/g, '');
 });
-
-
-function handleSubmit() {
-    const recaptchaResponse = grecaptcha.getResponse(); // Obtém a resposta do reCAPTCHA
-
-    if (!recaptchaResponse) {
-        alert("Por favor, complete o CAPTCHA.");
-        return false; // Impede o envio do formulário
-    }
-
-    return true; // Permite o envio do formulário
-}

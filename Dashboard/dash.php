@@ -174,9 +174,17 @@ require_once "../Dashboard/processamento/Auth.php";
             $resultEsportes = $stmtEsportes->fetch(PDO::FETCH_ASSOC);
             $estadoEsportes = $resultEsportes ? $resultEsportes['interative'] : 2; // 1 para aberto, 2 para fechado
 
+            // Quarta consulta
+            $queryTicket = "SELECT interative FROM eventos_ticket WHERE id = :idEvento LIMIT 1"; // Ajuste o nome da tabela conforme necessário
+            $stmtTicket = $conn->prepare($queryTicket);
+            $stmtTicket->bindParam(':idEvento', $idEvento, PDO::PARAM_INT);
+            $stmtTicket->execute();
+            $resultTicket = $stmtTicket->fetch(PDO::FETCH_ASSOC);
+            $estadoTicket = $resultTicket ? $resultTicket['interative'] : 2; // 1 para aberto, 2 para fechado
+
         } catch (PDOException $e) {
             echo "Erro ao conectar ao banco de dados: " . $e->getMessage();
-            $estadoGiros = $estadoPremios = $estadoEsportes = 3; // Valor padrão em caso de erro
+            $estadoGiros = $estadoPremios = $estadoEsportes = $estadoTicket = 3; // Valor padrão em caso de erro
         }
         ?>
 
@@ -211,6 +219,14 @@ require_once "../Dashboard/processamento/Auth.php";
                                     <i class="fas fa-unlock" id="icon-premios"></i> Esportes
                                 </button>
                             </form>
+
+                            <!-- Botão para Status de Ticket com ícone -->
+                            <form method="POST" action="./processamento/statusForms_Ticket.php" class="form-status">
+                                <input type="hidden" name="eventoId5" value="3">
+                                <button class="button-option" type="submit">
+                                    <i class="fas fa-unlock" id="icon-premios"></i> Ticket
+                                </button>
+                            </form>
                         </div>
 
                     </div>
@@ -222,10 +238,12 @@ require_once "../Dashboard/processamento/Auth.php";
                     const formGiros = document.querySelector("input[name='eventoId3']").closest('.form-status');
                     const formPremios = document.querySelector("input[name='eventoId1']").closest('.form-status');
                     const formEsportes = document.querySelector("input[name='eventoId4']").closest('.form-status');
+                    const formTicket = document.querySelector("input[name='eventoId5']").closest('.form-status');
 
                     const submitGirosButton = document.getElementById("submitGiros");
                     const submitPremiosButton = document.getElementById("submitPremios");
                     const submitEsportesButton = document.getElementById("submitPremioEsportes");
+                    const submitTicketButton = document.getElementById("submitPremioTicket");
 
                     // Função para trocar ícone no clique
                     function toggleIcon(iconId) {
@@ -271,6 +289,11 @@ require_once "../Dashboard/processamento/Auth.php";
                         sendForm(formEsportes);
                     });
 
+                    submitTicketButton.addEventListener('click', (event) => {
+                        toggleIcon('icon-ticket');
+                        sendForm(formTicket);
+                    });
+
                     // Restaura o estado do ícone ao carregar a página
                     function restoreIconState(iconId) {
                         const state = localStorage.getItem(iconId);
@@ -288,12 +311,13 @@ require_once "../Dashboard/processamento/Auth.php";
                     restoreIconState('icon-giros');
                     restoreIconState('icon-premios');
                     restoreIconState('icon-esportes');
+                    restoreIconState('icon-ticket');
                 }
 
                 setupFormListeners(); // Chama a função para configurar os ouvintes
             </script>
 
-            <!-- <div class="container mt-5">
+            <div class="container mt-5">
                 <h2 class="mb-4 titulo">Adicionar Evento</h2>
                 <div class="form-group">
                     <label for="tipoFormulario" class="mb-3">Selecione o tipo de formulário:</label>
@@ -302,6 +326,7 @@ require_once "../Dashboard/processamento/Auth.php";
                         <option value="giro">Formulário de Giro</option>
                         <option value="premiacao">Formulário de Premiação</option>
                         <option value="esportes">Formulário de Esportes</option>
+                        <option value="ticket">Formulário de Ticket</option>
                     </select>
                 </div>
             </div>
@@ -358,23 +383,44 @@ require_once "../Dashboard/processamento/Auth.php";
                     </div>
                     <button type="submit" class="btn_envio">Adicionar Evento de Esportes</button>
                 </form>
-            </div> -->
+            </div>
+
+            <div id="formularioTicket" style="display: none; margin-top: 20px;">
+                <form action="./processamento/adicionar_evento_ticket.php" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="imagemTicket" class="form-label">Banner:</label>
+                        <input type="file" class="form-control" id="imagemTicket" name="banner" accept="image/*" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tituloTicket" class="form-label">Título:</label>
+                        <input type="text" class="form-control" id="tituloTicket" name="titulo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagemTicket" class="form-label">Imagem:</label>
+                        <input type="file" class="form-control" id="imagemTicket" name="imagem" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn_envio">Adicionar Evento de Ticket</button>
+                </form>
+            </div>
 
             <?php
             require_once '../back-php/conexao.php'; // Inclua o arquivo de conexão
 
             try {
+                // Conectar ao banco de dados usando PDO
                 $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password);
                 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+            
                 // Consulta SQL para recuperar eventos de todas as tabelas
                 $sql = "
-        SELECT id, titulo, imagem, banner, 'premiacao' AS tipo FROM eventos_premiacao
-        UNION ALL
-        SELECT id, titulo, imagem, banner, 'giros' AS tipo FROM eventos_giros
-        UNION ALL
-        SELECT id, titulo, imagem, banner, 'esportes' AS tipo FROM eventos_esportes
-    ";
+                    SELECT id, titulo, imagem, banner, 'premiacao' AS tipo FROM eventos_premiacao
+                    UNION ALL
+                    SELECT id, titulo, imagem, banner, 'giros' AS tipo FROM eventos_giros
+                    UNION ALL
+                    SELECT id, titulo, imagem, banner, 'esportes' AS tipo FROM eventos_esportes
+                    UNION ALL
+                    SELECT id, titulo, imagem, banner, 'ticket' AS tipo FROM eventos_ticket
+                ";
 
                 $stmt = $conn->prepare($sql);
                 $stmt->execute();
@@ -489,11 +535,13 @@ require_once "../Dashboard/processamento/Auth.php";
             const formularioGiro = document.getElementById('formularioGiro');
             const formularioPremiacao = document.getElementById('formularioPremiacao');
             const formularioEsportes = document.getElementById('formularioEsportes');
+            const formularioTicket = document.getElementById('formularioTicket');
 
             // Oculta ambos os formulários
             formularioGiro.style.display = 'none';
             formularioPremiacao.style.display = 'none';
             formularioEsportes.style.display = 'none';
+            formularioTicket.style.display = 'none';
 
             // Mostra o formulário correspondente
             if (tipo === 'giro') {
@@ -502,6 +550,8 @@ require_once "../Dashboard/processamento/Auth.php";
                 formularioPremiacao.style.display = 'block';
             } else if (tipo === 'esportes') {
                 formularioEsportes.style.display = 'block';
+            } else if (tipo === 'ticket') {
+                formularioTicket.style.display = 'block';
             }
         }
     </script>

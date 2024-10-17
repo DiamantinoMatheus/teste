@@ -88,16 +88,10 @@ try {
                     <input type="number" id="faturamento_maximo" name="faturamento_maximo" placeholder="Faturamento máximo" value="' . (isset($faturamento_maximo) ? htmlspecialchars($faturamento_maximo, ENT_QUOTES, 'UTF-8') : '') . '" required step="0.01">
                 </div>
         
-                <!-- Adiciona o widget do reCAPTCHA -->
-                <div class="form-group">
-                    <div class="g-recaptcha" data-sitekey="' . $siteKey . '"></div>
-                </div>
-        
                 <div class="form-group">
                     <button type="submit">Enviar</button>
                 </div>
             </form>
-            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
         ';
 
         } else {
@@ -212,7 +206,7 @@ try {
             });
 
         </script>
-        <script src="comands.js"></script>
+        <script src="comand.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6/jquery.inputmask.min.js"></script>
 
