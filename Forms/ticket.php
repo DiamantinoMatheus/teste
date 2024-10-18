@@ -25,7 +25,7 @@ if (!isset($pdo)) {
 
 // Inicializa variáveis para evitar erros de variável não definida
 $banner = '';
-$titulo = 'Título não disponível';
+$titulo = ' ';
 $imagem = '<p>Imagem não disponível</p>';
 $csrf_token = '';
 $htmlFormulario = '<p>O formulário não está disponível no momento.</p>'; // Valor padrão para evitar erros de variável não definida
@@ -70,7 +70,7 @@ try {
                         <label for="nome">Nome Completo</label>
                         <input type="text" name="nome" id="nome" placeholder="Informe seu nome completo" value="' . (isset($nome) ? htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') : '') . '" required maxlength="100">
                     </div>
-
+                    
                     <div class="form-group">
                         <label for="endereco">Endereço</label>
                         <input type="text" name="endereco" id="endereco" placeholder="Informe seu endereço" value="' . (isset($endereco) ? htmlspecialchars($endereco, ENT_QUOTES, 'UTF-8') : '') . '" maxlength="150">
@@ -80,7 +80,7 @@ try {
                         <label for="instagram">Instagram (@)</label>
                         <input type="text" name="instagram" id="instagram" placeholder="Informe seu Instagram" value="' . (isset($instagram) ? htmlspecialchars($instagram, ENT_QUOTES, 'UTF-8') : '') . '" maxlength="50">
                     </div>
-
+                    <div class="imagens">' . $imagem . '</div>
                     <div class="form-group">
                         <button type="submit">Enviar</button>
                     </div>
@@ -105,7 +105,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="https://static.pl-01.cdn-platform.com/themes/1.1.7/reals.bet/icons/favicon.ico">
-    <link rel="stylesheet" href="../Dashboard/css/style.css">
+    <link rel="stylesheet" href="../Dashboard/css/ticket.css">
     <title>Formulário - Reals</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -113,23 +113,21 @@ try {
 <body class="centro" style="background-image: url(../img/bg.webp); background-repeat: repeat-y;">
 
     <div class="banner">
-        <?php echo $banner; ?>
+
     </div>
     <div class="container">
-        <div class="header">
-            <h1 class="titulo"><?php echo $titulo; ?></h1>
-            <h2><strong class="regras1"><em>REGRAS:</em></strong></h2>
+        <div class="header" style="margin-top: 30px;">
+            <h1 class="titulo"></h1>
+            <h2><strong class="regras1"><em>SEGUIMOS JUNTOS 🐯🤩</em></strong></h2>
             <p>
-                Estar inscrito no <a href="https://t.me/comunidadereals">CANAL do TELEGRAM</a>;<br>
-                Seguir a <a href="https://www.instagram.com/reals.bet/">REALS no INSTAGRAM</a>;<br>
-                Preencher o formulário abaixo <strong class="regras">CORRETAMENTE</strong>;<br>
-                Caso não esteja cumprindo as 3 regras, <strong class="regras">NÃO RECEBERÁ AS
-                    PREMIAÇÕES</strong>.<br><br><br>
-                Preencha somente UMA <strong>ÚNICA VEZ</strong> o formulário com seus <strong>DADOS CORRETOS</strong>
-                utilizados na <a href="https://realsbet.com/signup">REALS BET</a>.<br>
-                Caso não tenha conta na Reals Bet, <a href="https://realsbet.com/signup">CADASTRE-SE AQUI!</a>
+                Para celebrar a parceira entre Amazonas e Reals, serão sorteados <strong>CEM PARES DE
+                    INGRESSOS!!</strong> <br>
+                Preencha corretamente com seus dados, até as 17 horas de hoje (18/10) <br>os ganhadores já receberam um
+                retorno!
             </p>
+
         </div>
+
 
         <p id="message" class="message" class="<?php echo htmlspecialchars($messageClass); ?>">
             <?php echo htmlspecialchars($message); ?>

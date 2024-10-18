@@ -45,6 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Verifica e converte o banner para blob se fornecido
     if (!empty($_FILES['banner']['name'])) {
+        if ($_FILES['banner']['error'] !== UPLOAD_ERR_OK) {
+            die('Erro ao carregar o arquivo do banner. Código de erro: ' . $_FILES['banner']['error']);
+        }
         try {
             $bannerBlob = arquivoParaBlob($_FILES['banner']);
         } catch (Exception $e) {
@@ -78,10 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-        // Vardump para depuração
-        var_dump('eventos_premiacao - ID:', $id);
         if (!$stmt->execute()) {
-            throw new Exception('Erro ao atualizar o evento na tabela eventos_premiacao.');
+            throw new Exception('Erro ao atualizar o evento na tabela eventos_premiacao: ' . implode(", ", $stmt->errorInfo()));
         }
 
         // Atualização na tabela eventos_giros
@@ -106,10 +107,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-        // Vardump para depuração
-        var_dump('eventos_giros - ID:', $id);
         if (!$stmt->execute()) {
-            throw new Exception('Erro ao atualizar o evento na tabela eventos_giros.');
+            throw new Exception('Erro ao atualizar o evento na tabela eventos_giros: ' . implode(", ", $stmt->errorInfo()));
         }
 
         // Atualização na tabela eventos_esportes
@@ -134,10 +133,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-        // Vardump para depuração
-        var_dump('eventos_esportes - ID:', $id);
         if (!$stmt->execute()) {
-            throw new Exception('Erro ao atualizar o evento na tabela eventos_esportes.');
+            throw new Exception('Erro ao atualizar o evento na tabela eventos_esportes: ' . implode(", ", $stmt->errorInfo()));
         }
 
         // Atualização na tabela eventos_ticket
@@ -162,10 +159,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-        // Vardump para depuração
-        var_dump('eventos_ticket - ID:', $id);
         if (!$stmt->execute()) {
-            throw new Exception('Erro ao atualizar o evento na tabela eventos_ticket.');
+            throw new Exception('Erro ao atualizar o evento na tabela eventos_ticket: ' . implode(", ", $stmt->errorInfo()));
         }
 
         header("Location: ../dash.php");
@@ -176,5 +171,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die($e->getMessage());
     }
 } else {
-    echo "Método de requisição inválido.";
+    die("Método de requisição inválido.");
 }

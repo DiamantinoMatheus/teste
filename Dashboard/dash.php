@@ -1,9 +1,8 @@
 <?php
-
-// Start session
-if (!session_id()) {
+if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
 
 // // Verifica se o usuário está autenticado
 if (!isset($_SESSION['email'])) {
