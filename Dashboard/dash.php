@@ -24,7 +24,7 @@ require_once "../Dashboard/processamento/Auth.php";
     <link rel="shortcut icon" href="https://static.pl-01.cdn-platform.com/themes/1.1.7/reals.bet/icons/favicon.ico">
 
     <title>Painel</title>
-    <link rel="stylesheet" href="./css/dash.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="./css/dash.css" media="print" onload="this.media='all'" rel="preload">
     <link rel="icon" href="./img/logo.png" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -457,16 +457,6 @@ require_once "../Dashboard/processamento/Auth.php";
 
                                     <div class="card-body text-center">
                                         <h5 class="card-title"><?php echo htmlspecialchars($evento['titulo']); ?></h5>
-
-                                        <div class="conteudo col-lg-5">
-                                            <?php if (!empty($evento['imagem'])): ?>
-                                                <img src="data:image/jpeg;base64,<?php echo base64_encode($evento['imagem']); ?>"
-                                                    class="img-thumbnail"
-                                                    alt="Imagem do Evento"
-                                                    style="max-width: 100%; height: auto; object-fit: cover;"
-                                                    loading="lazy" width="400" height="300">
-                                            <?php endif; ?>
-                                        </div>
 
                                         <!-- Modal de Editar -->
                                         <div class="modal fade" id="editModal<?php echo $evento['id']; ?>" tabindex="-1" aria-labelledby="editModalLabel<?php echo $evento['id']; ?>" aria-hidden="true">

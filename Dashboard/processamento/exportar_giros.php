@@ -32,7 +32,7 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Consulta para selecionar os dados da tabela 'giros'
-    $sql = "SELECT nome, email, codigo, created_at FROM giros"; // Ajuste a tabela conforme necessário
+    $sql = "SELECT nome, email, codigo, created_at, imagem FROM giros"; // Incluindo a coluna imagem
     $stmt = $conn->prepare($sql);
     $stmt->execute();
 
@@ -47,7 +47,7 @@ try {
     fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
     // Escreve o cabeçalho do CSV
-    fputcsv($output, ['Nome', 'Email', 'Codigo', 'Data/Hora'], separator: ';'); // Usando ponto e vírgula como delimitador
+    fputcsv($output, ['Nome', 'Email', 'Codigo', 'Data/Hora', 'Imagem'], ';'); // Usando ponto e vírgula como delimitador
 
     // Escreve os dados no CSV
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -58,6 +58,9 @@ try {
         $dateTime = new DateTime($row['created_at'], new DateTimeZone('UTC'));
         $dateTime->setTimezone(new DateTimeZone('America/Sao_Paulo'));
         $row['created_at'] = $dateTime->format('d/m/Y H:i:s');
+
+        // Inclui o caminho da imagem no CSV, se existir
+        $row['imagem'] = !empty($row['imagem']) ? $row['imagem'] : 'Sem imagem';
 
         // Escreve a linha no CSV
         fputcsv($output, $row, ';'); // Usando ponto e vírgula como delimitador
