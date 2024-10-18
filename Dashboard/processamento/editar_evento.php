@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($file['error'] === UPLOAD_ERR_OK) {
             return file_get_contents($file['tmp_name']);
         } else {
-            throw new Exception('Erro ao carregar o arquivo.');
+            throw new Exception('Erro ao carregar o arquivo: ' . $file['error']);
         }
     }
 
@@ -45,9 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Verifica e converte o banner para blob se fornecido
     if (!empty($_FILES['banner']['name'])) {
-        if ($_FILES['banner']['error'] !== UPLOAD_ERR_OK) {
-            die('Erro ao carregar o arquivo do banner. Código de erro: ' . $_FILES['banner']['error']);
-        }
         try {
             $bannerBlob = arquivoParaBlob($_FILES['banner']);
         } catch (Exception $e) {
@@ -55,112 +52,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Atualiza o evento nas tabelas
+    // Função para atualizar eventos nas tabelas
+    function atualizarEvento($pdo, $tabela, $titulo, $bannerBlob, $imagemBlob, $id)
+    {
+        $sql = "UPDATE $tabela SET titulo = :titulo";
+        if ($bannerBlob !== null) {
+            $sql .= ", banner = :banner";
+        }
+        if ($imagemBlob !== null) {
+            $sql .= ", imagem = :imagem";
+        }
+        $sql .= " WHERE id = :id";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':titulo', $titulo, PDO::PARAM_STR);
+        if ($bannerBlob !== null) {
+            $stmt->bindParam(':banner', $bannerBlob, PDO::PARAM_LOB);
+        }
+        if ($imagemBlob !== null) {
+            $stmt->bindParam(':imagem', $imagemBlob, PDO::PARAM_LOB);
+        }
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+        if (!$stmt->execute()) {
+            throw new Exception('Erro ao atualizar o evento na tabela ' . $tabela . ': ' . implode(", ", $stmt->errorInfo()));
+        }
+    }
+
+    // Atualiza as tabelas
     try {
-        // Usa a conexão PDO definida no arquivo de conexão
         global $pdo;
-
-        // Atualização na tabela eventos_premiacao
-        $sql = "UPDATE eventos_premiacao SET titulo = :titulo";
-        if ($bannerBlob !== null) {
-            $sql .= ", banner = :banner";
-        }
-        if ($imagemBlob !== null) {
-            $sql .= ", imagem = :imagem";
-        }
-
-        $sql .= " WHERE id = :id";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':titulo', $titulo, PDO::PARAM_STR);
-        if ($bannerBlob !== null) {
-            $stmt->bindParam(':banner', $bannerBlob, PDO::PARAM_LOB);
-        }
-        if ($imagemBlob !== null) {
-            $stmt->bindParam(':imagem', $imagemBlob, PDO::PARAM_LOB);
-        }
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-        if (!$stmt->execute()) {
-            throw new Exception('Erro ao atualizar o evento na tabela eventos_premiacao: ' . implode(", ", $stmt->errorInfo()));
-        }
-
-        // Atualização na tabela eventos_giros
-        $sql = "UPDATE eventos_giros SET titulo = :titulo";
-        if ($bannerBlob !== null) {
-            $sql .= ", banner = :banner";
-        }
-        if ($imagemBlob !== null) {
-            $sql .= ", imagem = :imagem";
-        }
-
-        $sql .= " WHERE id = :id";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':titulo', $titulo, PDO::PARAM_STR);
-        if ($bannerBlob !== null) {
-            $stmt->bindParam(':banner', $bannerBlob, PDO::PARAM_LOB);
-        }
-        if ($imagemBlob !== null) {
-            $stmt->bindParam(':imagem', $imagemBlob, PDO::PARAM_LOB);
-        }
-
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-        if (!$stmt->execute()) {
-            throw new Exception('Erro ao atualizar o evento na tabela eventos_giros: ' . implode(", ", $stmt->errorInfo()));
-        }
-
-        // Atualização na tabela eventos_esportes
-        $sql = "UPDATE eventos_esportes SET titulo = :titulo";
-        if ($bannerBlob !== null) {
-            $sql .= ", banner = :banner";
-        }
-        if ($imagemBlob !== null) {
-            $sql .= ", imagem = :imagem";
-        }
-
-        $sql .= " WHERE id = :id";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':titulo', $titulo, PDO::PARAM_STR);
-        if ($bannerBlob !== null) {
-            $stmt->bindParam(':banner', $bannerBlob, PDO::PARAM_LOB);
-        }
-        if ($imagemBlob !== null) {
-            $stmt->bindParam(':imagem', $imagemBlob, PDO::PARAM_LOB);
-        }
-
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-        if (!$stmt->execute()) {
-            throw new Exception('Erro ao atualizar o evento na tabela eventos_esportes: ' . implode(", ", $stmt->errorInfo()));
-        }
-
-        // Atualização na tabela eventos_ticket
-        $sql = "UPDATE eventos_ticket SET titulo = :titulo";
-        if ($bannerBlob !== null) {
-            $sql .= ", banner = :banner";
-        }
-        if ($imagemBlob !== null) {
-            $sql .= ", imagem = :imagem";
-        }
-
-        $sql .= " WHERE id = :id";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':titulo', $titulo, PDO::PARAM_STR);
-        if ($bannerBlob !== null) {
-            $stmt->bindParam(':banner', $bannerBlob, PDO::PARAM_LOB);
-        }
-        if ($imagemBlob !== null) {
-            $stmt->bindParam(':imagem', $imagemBlob, PDO::PARAM_LOB);
-        }
-
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-        if (!$stmt->execute()) {
-            throw new Exception('Erro ao atualizar o evento na tabela eventos_ticket: ' . implode(", ", $stmt->errorInfo()));
+        
+        $tabelas = ['eventos_premiacao', 'eventos_giros', 'eventos_esportes', 'eventos_ticket'];
+        
+        foreach ($tabelas as $tabela) {
+            atualizarEvento($pdo, $tabela, $titulo, $bannerBlob, $imagemBlob, $id);
         }
 
         header("Location: ../dash.php");

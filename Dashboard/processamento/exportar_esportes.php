@@ -3,7 +3,7 @@
 date_default_timezone_set('America/Sao_Paulo');
 
 // Inicia a sessão
-if (!session_id()) {
+if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 

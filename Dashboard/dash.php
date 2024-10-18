@@ -457,16 +457,6 @@ require_once "../Dashboard/processamento/Auth.php";
 
                                     <div class="card-body text-center">
                                         <h5 class="card-title"><?php echo htmlspecialchars($evento['titulo']); ?></h5>
-                                        <p class="rules">
-                                            <strong>REGRAS:</strong><br>
-                                            - Estar inscrito no CANAL do TELEGRAM;<br>
-                                            - Seguir a REALS no INSTAGRAM;<br>
-                                            - Preencher o formulário abaixo CORRETAMENTE;<br>
-                                            - Caso não cumpra as 3 regras, NÃO RECEBERÁ AS PREMIAÇÕES.<br>
-                                            <br>
-                                            Preencha somente UMA VEZ o formulário com seus DADOS CORRETOS utilizados na REALS BET.
-                                            Caso não tenha conta, <a href="#">CADASTRE-SE AQUI!</a>
-                                        </p>
 
                                         <div class="conteudo col-lg-5">
                                             <?php if (!empty($evento['imagem'])): ?>
