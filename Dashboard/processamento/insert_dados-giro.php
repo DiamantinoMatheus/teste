@@ -9,12 +9,15 @@ $secret_key = 'sua_chave_super_secreta'; // NÃO armazene isso diretamente no c�
 // Função para criptografar o e-mail
 function encrypt_email($email, $key)
 {
+    // Vetor de inicialização (IV) de 16 bytes (deve ser único para cada criptografia)
     $iv = openssl_random_pseudo_bytes(16);
+    // Criptografa o e-mail
     $encrypted_email = openssl_encrypt($email, 'aes-256-cbc', $key, 0, $iv);
+    // Retorna o IV junto com o e-mail criptografado, pois ele será necessário para descriptografar
     return base64_encode($encrypted_email . '::' . $iv);
 }
 
-// Função para descriptografar o e-mail
+// Função para descriptografar o e-mail (usada ao exportar)
 function decrypt_email($encrypted_email, $key)
 {
     list($encrypted_data, $iv) = explode('::', base64_decode($encrypted_email), 2);
@@ -44,39 +47,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    // Processar o upload da imagem
-    if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] === UPLOAD_ERR_OK) {
-        $imagem = $_FILES['imagem'];
-        
-        // Verifica se o arquivo é uma imagem
-        $imagemTipo = mime_content_type($imagem['tmp_name']);
-        if (strpos($imagemTipo, 'image/') !== 0) {
-            $_SESSION['message'] = 'Erro: O arquivo enviado não é uma imagem.';
-            $_SESSION['messageClass'] = 'error';
-            header("Location: ../../Forms/giros.php");
-            exit();
-        }
-
-        // Define o diretório para armazenar a imagem (baseado no ID ou data)
-        $diretorioImagens = __DIR__ . '/../../uploads/' . date('Y-m-d'); // Pasta baseada na data
-        if (!is_dir($diretorioImagens)) {
-            mkdir($diretorioImagens, 0755, true); // Cria a pasta se não existir
-        }
-
-        $nomeImagem = uniqid() . '-' . basename($imagem['name']); // Gera um nome único para a imagem
-        $caminhoImagem = $diretorioImagens . '/' . $nomeImagem;
-
-        // Move a imagem para o diretório de uploads
-        if (!move_uploaded_file($imagem['tmp_name'], $caminhoImagem)) {
-            $_SESSION['message'] = 'Erro ao mover o arquivo para o diretório de uploads.';
-            $_SESSION['messageClass'] = 'error';
-            header("Location: ../../Forms/giros.php");
-            exit();
-        }
-    } else {
-        $caminhoImagem = null; // Se não houver imagem, pode definir como nulo
-    }
-
     include_once(__DIR__ . '/../../back-php/conexao.php');
 
     try {
@@ -102,11 +72,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email_criptografado = encrypt_email($email, $secret_key);
 
         // Insere os dados no banco
-        $stmt = $conn->prepare("INSERT INTO giros (nome, email, codigo, imagem) VALUES (:nome, :email, :codigo, :imagem)");
+        $stmt = $conn->prepare("INSERT INTO giros (nome, email, codigo) VALUES (:nome, :email, :codigo)");
         $stmt->bindParam(':nome', $nome);
         $stmt->bindParam(':email', $email_criptografado); // Salva o e-mail criptografado
         $stmt->bindParam(':codigo', $codigo);
-        $stmt->bindParam(':imagem', $nomeImagem); // Salva o nome da imagem
 
         if ($stmt->execute()) {
             $_SESSION['message'] = 'Formulário enviado com sucesso!';
@@ -124,4 +93,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header("Location: ../../Forms/giros.php");
     exit();
 }
-?>
