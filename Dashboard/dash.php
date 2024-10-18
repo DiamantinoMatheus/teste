@@ -100,8 +100,7 @@ try {
     <!-- Barra de navegação -->
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
-            <img src="../img/logo.webp" class="logo" alt="Imagem do Evento" loading="lazy"
-                style="width: 100px; height: auto;">
+            <img src="../img/logo.webp" style="width:100px; height:auto" class="card-img-top" alt="Descrição da imagem" loading="lazy">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -144,7 +143,7 @@ try {
                 <div class="card">
                     <div class="card-body ">
                         <h5 style="padding: 10px; font-size: 25px;" class="card-title text-center"> <i
-                                style="margin-right: 10px;" class="bi bi-clipboard-pulse"></i>Formulários</h5>
+                                style="margin-right: 10px; font-display: swap;" class="bi bi-clipboard-pulse"></i>Formulários</h5>
                         <!-- Container flexível para os botões -->
                         <div class="button-container" style="margin-top: 20px;">
                             <!-- Botão para Status de Prêmios com ícone -->
@@ -286,11 +285,11 @@ try {
                         <?php if (!empty($evento['banner'])): ?>
                             <img src="data:image/jpeg;base64,<?= base64_encode($evento['banner']); ?>" 
                                 class="card-img-top" alt="Imagem do Evento" 
-                                style="height: 50%; object-fit: cover;" loading="lazy">
+                                style="height: 100px; object-fit: cover;">
                         <?php endif; ?>
 
                         <div class="card-body text-center">
-                            <h5 class="card-title"><?= htmlspecialchars($evento['titulo']); ?></h5>
+                        <h5 class="card-title" style="font-display: swap; font-size:10px"><?= htmlspecialchars($evento['titulo']); ?></h5>
 
                             <!-- Modal de Editar -->
                             <div class="modal fade" id="editModal<?= $evento['id']; ?>" tabindex="-1" 

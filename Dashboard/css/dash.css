@@ -153,15 +153,6 @@
     max-width: var(--modal-max-width);
 }
 
-/* Títulos */
-.titulo {
-    font-size: 20px;
-    font-weight: bold;
-    color: var(--text-color);
-    text-decoration: overline;
-    text-decoration-color: var(--text-color);
-}
-
 /* Botão de envio */
 .btn_envio {
     border: none;
