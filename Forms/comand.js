@@ -95,3 +95,110 @@ document.getElementById('codigo').addEventListener('input', function (e) {
     // Remove letras e os caracteres indesejados, incluindo o hífen (-)
     this.value = this.value.replace(/[a-zA-Z.,()$¨%@!&*/:€£¥•‘’”“[\]~´`-ÇçáàéèÈÁÉÈÀóòÓÒúùÚÙÍÌíì'"+=-_^#@{}/|;]/g, '');
 });
+
+function mostrarFormulario(tipo) {
+    // Seleciona os formulários
+    const formularioGiro = document.getElementById('formularioGiro');
+    const formularioPremiacao = document.getElementById('formularioPremiacao');
+    const formularioEsportes = document.getElementById('formularioEsportes');
+    const formularioTicket = document.getElementById('formularioTicket');
+
+    // Oculta ambos os formulários
+    formularioGiro.style.display = 'none';
+    formularioPremiacao.style.display = 'none';
+    formularioEsportes.style.display = 'none';
+    formularioTicket.style.display = 'none';
+
+    // Mostra o formulário correspondente
+    if (tipo === 'giro') {
+        formularioGiro.style.display = 'block';
+    } else if (tipo === 'premiacao') {
+        formularioPremiacao.style.display = 'block';
+    } else if (tipo === 'esportes') {
+        formularioEsportes.style.display = 'block';
+    } else if (tipo === 'ticket') {
+        formularioTicket.style.display = 'block';
+    }
+}
+
+function setupFormListeners() {
+    const formGiros = document.querySelector("input[name='eventoId3']").closest('.form-status');
+    const formPremios = document.querySelector("input[name='eventoId1']").closest('.form-status');
+    const formEsportes = document.querySelector("input[name='eventoId4']").closest('.form-status');
+    const formTicket = document.querySelector("input[name='eventoId5']").closest('.form-status');
+
+    const submitGirosButton = document.getElementById("submitGiros");
+    const submitPremiosButton = document.getElementById("submitPremios");
+    const submitEsportesButton = document.getElementById("submitPremioEsportes");
+    const submitTicketButton = document.getElementById("submitPremioTicket");
+
+    // Função para trocar ícone no clique
+    function toggleIcon(iconId) {
+        const icon = document.getElementById(iconId);
+        if (icon.classList.contains('fa-unlock')) {
+            icon.classList.remove('fa-unlock');
+            icon.classList.add('fa-lock');
+            localStorage.setItem(iconId, 'locked'); // Salva o estado como "locked"
+        } else {
+            icon.classList.remove('fa-lock');
+            icon.classList.add('fa-unlock');
+            localStorage.setItem(iconId, 'unlocked'); // Salva o estado como "unlocked"
+        }
+    }
+
+    // Função para enviar o formulário
+    function sendForm(form) {
+        const formData = new FormData(form);
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            // Lidar com a resposta se necessário
+            console.log("Formulário enviado com sucesso");
+        }).catch(error => {
+            console.error("Erro ao enviar o formulário", error);
+        });
+    }
+
+    // Eventos de clique
+    submitGirosButton.addEventListener('click', (event) => {
+        toggleIcon('icon-giros');
+        sendForm(formGiros);
+    });
+
+    submitPremiosButton.addEventListener('click', (event) => {
+        toggleIcon('icon-premios');
+        sendForm(formPremios);
+    });
+
+    submitEsportesButton.addEventListener('click', (event) => {
+        toggleIcon('icon-esportes');
+        sendForm(formEsportes);
+    });
+
+    submitTicketButton.addEventListener('click', (event) => {
+        toggleIcon('icon-ticket');
+        sendForm(formTicket);
+    });
+
+    // Restaura o estado do ícone ao carregar a página
+    function restoreIconState(iconId) {
+        const state = localStorage.getItem(iconId);
+        const icon = document.getElementById(iconId);
+        if (state === 'locked') {
+            icon.classList.remove('fa-unlock');
+            icon.classList.add('fa-lock');
+        } else {
+            icon.classList.remove('fa-lock');
+            icon.classList.add('fa-unlock');
+        }
+    }
+
+    // Chama a função para restaurar o estado ao carregar a página
+    restoreIconState('icon-giros');
+    restoreIconState('icon-premios');
+    restoreIconState('icon-esportes');
+    restoreIconState('icon-ticket');
+}
+
+setupFormListeners(); // Chama a função para configurar os ouvintes

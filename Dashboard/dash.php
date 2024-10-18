@@ -11,6 +11,68 @@ if (!isset($_SESSION['email'])) {
 }
 require_once "../Dashboard/processamento/Auth.php";
 
+require_once '../back-php/conexao.php'; // Inclua o arquivo de conexão
+
+try {
+    // Cria uma nova conexão PDO
+    $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Consulta SQL para recuperar eventos de todas as tabelas
+    $sqlEventos = "
+        SELECT id, titulo, imagem, banner, 'premiacao' AS tipo FROM eventos_premiacao
+        UNION ALL
+        SELECT id, titulo, imagem, banner, 'giros' AS tipo FROM eventos_giros
+        UNION ALL
+        SELECT id, titulo, imagem, banner, 'esportes' AS tipo FROM eventos_esportes
+        UNION ALL
+        SELECT id, titulo, imagem, banner, 'ticket' AS tipo FROM eventos_ticket
+    ";
+
+    $stmtEventos = $conn->prepare($sqlEventos);
+    $stmtEventos->execute();
+    $eventos = $stmtEventos->fetchAll(PDO::FETCH_ASSOC);
+
+    // ID do evento que você deseja buscar
+    $idEvento = 1; // Ajuste conforme necessário
+
+    // Consultas para estados dos eventos e contagens
+    $sqlEstados = "
+        SELECT 
+            (SELECT formulario_aberto FROM eventos_giros WHERE id = :idEvento LIMIT 1) AS estadoGiros,
+            (SELECT interative FROM eventos_premiacao WHERE id = :idEvento LIMIT 1) AS estadoPremios,
+            (SELECT interative FROM eventos_esportes WHERE id = :idEvento LIMIT 1) AS estadoEsportes,
+            (SELECT interative FROM eventos_ticket WHERE id = :idEvento LIMIT 1) AS estadoTicket,
+            (SELECT COUNT(*) FROM eventos_premiacao) AS count_premiacao,
+            (SELECT COUNT(*) FROM eventos_giros) AS count_giros,
+            (SELECT COUNT(id) FROM user) AS total_ids_user
+    ";
+
+    $stmtEstados = $conn->prepare($sqlEstados);
+    $stmtEstados->bindParam(':idEvento', $idEvento, PDO::PARAM_INT);
+    $stmtEstados->execute();
+    $resultEstados = $stmtEstados->fetch(PDO::FETCH_ASSOC);
+
+    // Extraindo os resultados
+    $estadoGiros = $resultEstados['estadoGiros'] ?? 2; // 1 para aberto, 2 para fechado
+    $estadoPremios = $resultEstados['estadoPremios'] ?? 2; // 1 para aberto, 2 para fechado
+    $estadoEsportes = $resultEstados['estadoEsportes'] ?? 2; // 1 para aberto, 2 para fechado
+    $estadoTicket = $resultEstados['estadoTicket'] ?? 2; // 1 para aberto, 2 para fechado
+
+    // Calcula o total combinando as contagens das duas tabelas
+    $total_ids = ($resultEstados['count_premiacao'] ?? 0) + ($resultEstados['count_giros'] ?? 0);
+    $total_ids_user = $resultEstados['total_ids_user'] ?? 0;
+
+} catch (PDOException $e) {
+    echo "Erro ao conectar ao banco de dados: " . htmlspecialchars($e->getMessage());
+    // Definindo valores padrão em caso de erro
+    $estadoGiros = $estadoPremios = $estadoEsportes = $estadoTicket = 3; // 3 para erro
+    $total_ids = $total_ids_user = 0;
+} finally {
+    // Fecha a conexão com o banco de dados
+    $conn = null;
+}
+
 ?>
 
 
@@ -25,7 +87,6 @@ require_once "../Dashboard/processamento/Auth.php";
 
     <title>Painel</title>
     <link rel="stylesheet" href="./css/dash.css" media="print" onload="this.media='all'" rel="preload">
-    <link rel="icon" href="./img/logo.png" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -39,11 +100,8 @@ require_once "../Dashboard/processamento/Auth.php";
     <!-- Barra de navegação -->
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
-            <a href="dash.php" class="navbar-brand">
-                <img src="../img/logo.webp"
-                    class="logo"
-                    alt="Imagem do Evento"
-                    loading="lazy" width="auto" height="auto"> </a>
+            <img src="../img/logo.webp" class="logo" alt="Imagem do Evento" loading="lazy"
+                style="width: 100px; height: auto;">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -79,120 +137,14 @@ require_once "../Dashboard/processamento/Auth.php";
 
 
     <main class="container">
-        <h1 class="mt-4 mb-4 titulo">Painel Geral</h1>
-        <?php
-        $total_ids = 0; // Inicializa a variável para armazenar o total de IDs
 
-        try {
-            // Cria uma nova conexão PDO
-            $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password);
-            // Define o modo de erro PDO para exceções
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            // Consulta SQL para contar o número total de registros em ambas as tabelas
-            $sql = "
-        SELECT 
-            (SELECT COUNT(*) FROM eventos_premiacao) AS count_premiacao,
-            (SELECT COUNT(*) FROM eventos_giros) AS count_giros
-    ";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            // Calcula o total combinando as contagens das duas tabelas
-            $total_ids = ($result['count_premiacao'] !== null ? $result['count_premiacao'] : 0) +
-                ($result['count_giros'] !== null ? $result['count_giros'] : 0);
-        } catch (PDOException $e) {
-            echo "Erro ao recuperar dados: " . $e->getMessage();
-        } finally {
-            // Fecha a conexão com o banco de dados
-            $conn = null;
-        }
-
-        ?>
-
-
-        <?php
-        $total_ids_user = 0; // Inicializa a variável para armazenar o total de IDs da tabela user
-
-        try {
-            // Cria uma nova conexão PDO
-            $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password);
-            // Define o modo de erro PDO para exceções
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            // Consulta SQL para contar o número total de IDs na tabela user
-            $sql = "SELECT COUNT(id) AS total_ids_user FROM user";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            // Verifica se o resultado não é nulo e define o valor padrão se necessário
-            $total_ids_user = $result['total_ids_user'] !== null ? $result['total_ids_user'] : 0;
-        } catch (PDOException $e) {
-            echo "Erro ao recuperar dados: " . $e->getMessage();
-        } finally {
-            // Fecha a conexão com o banco de dados
-            $conn = null;
-        }
-
-
-        ?>
-
-        <?php
-        // Cria uma nova conexão PDO
-        try {
-            $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password);
-            // Define o modo de erro PDO para exceções
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            // ID do evento que você deseja buscar
-            $idEvento = 1; // Ajuste conforme necessário
-
-            // Primeira consulta
-            $queryGiros = "SELECT formulario_aberto FROM eventos_giros WHERE id = :idEvento LIMIT 1";
-            $stmtGiros = $conn->prepare($queryGiros);
-            $stmtGiros->bindParam(':idEvento', $idEvento, PDO::PARAM_INT);
-            $stmtGiros->execute();
-            $resultGiros = $stmtGiros->fetch(PDO::FETCH_ASSOC);
-            $estadoGiros = $resultGiros ? $resultGiros['formulario_aberto'] : 2; // 1 para aberto, 2 para fechado
-
-            // Segunda consulta
-            $queryPremios = "SELECT interative FROM eventos_premiacao WHERE id = :idEvento LIMIT 1"; // Ajuste o nome da tabela conforme necessário
-            $stmtPremios = $conn->prepare($queryPremios);
-            $stmtPremios->bindParam(':idEvento', $idEvento, PDO::PARAM_INT);
-            $stmtPremios->execute();
-            $resultPremios = $stmtPremios->fetch(PDO::FETCH_ASSOC);
-            $estadoPremios = $resultPremios ? $resultPremios['formulario_aberto'] : 2; // 1 para aberto, 2 para fechado
-
-            // Terceira consulta
-            $queryEsportes = "SELECT interative FROM eventos_esportes WHERE id = :idEvento LIMIT 1"; // Ajuste o nome da tabela conforme necessário
-            $stmtEsportes = $conn->prepare($queryEsportes);
-            $stmtEsportes->bindParam(':idEvento', $idEvento, PDO::PARAM_INT);
-            $stmtEsportes->execute();
-            $resultEsportes = $stmtEsportes->fetch(PDO::FETCH_ASSOC);
-            $estadoEsportes = $resultEsportes ? $resultEsportes['interative'] : 2; // 1 para aberto, 2 para fechado
-
-            // Quarta consulta
-            $queryTicket = "SELECT interative FROM eventos_ticket WHERE id = :idEvento LIMIT 1"; // Ajuste o nome da tabela conforme necessário
-            $stmtTicket = $conn->prepare($queryTicket);
-            $stmtTicket->bindParam(':idEvento', $idEvento, PDO::PARAM_INT);
-            $stmtTicket->execute();
-            $resultTicket = $stmtTicket->fetch(PDO::FETCH_ASSOC);
-            $estadoTicket = $resultTicket ? $resultTicket['interative'] : 2; // 1 para aberto, 2 para fechado
-
-        } catch (PDOException $e) {
-            echo "Erro ao conectar ao banco de dados: " . $e->getMessage();
-            $estadoGiros = $estadoPremios = $estadoEsportes = $estadoTicket = 3; // Valor padrão em caso de erro
-        }
-        ?>
-
-        <div class="row d-flex justify-content-left">
+        <div class="row d-flex justify-content-left  mt-4">
             <!-- Card para Lives -->
             <div class="col-md-12 mb-4 card-container ">
                 <div class="card">
                     <div class="card-body ">
-                        <h5 style="padding: 10px; font-size: 25px;" class="card-title text-center"> <i style="margin-right: 10px;" class="bi bi-clipboard-pulse"></i>Formulários</h5>
+                        <h5 style="padding: 10px; font-size: 25px;" class="card-title text-center"> <i
+                                style="margin-right: 10px;" class="bi bi-clipboard-pulse"></i>Formulários</h5>
                         <!-- Container flexível para os botões -->
                         <div class="button-container" style="margin-top: 20px;">
                             <!-- Botão para Status de Prêmios com ícone -->
@@ -202,7 +154,7 @@ require_once "../Dashboard/processamento/Auth.php";
                                     <i class="fas fa-unlock" id="icon-premios"></i> Prêmios
                                 </button>
                             </form>
-                            
+
                             <!-- Botão para Status de Giros com ícone -->
                             <form method="POST" action="./processamento/statusForms.php" class="form-status">
                                 <input type="hidden" name="eventoId3" value="6">
@@ -231,92 +183,7 @@ require_once "../Dashboard/processamento/Auth.php";
                     </div>
                 </div>
             </div>
-
-            <script>
-                function setupFormListeners() {
-                    const formGiros = document.querySelector("input[name='eventoId3']").closest('.form-status');
-                    const formPremios = document.querySelector("input[name='eventoId1']").closest('.form-status');
-                    const formEsportes = document.querySelector("input[name='eventoId4']").closest('.form-status');
-                    const formTicket = document.querySelector("input[name='eventoId5']").closest('.form-status');
-
-                    const submitGirosButton = document.getElementById("submitGiros");
-                    const submitPremiosButton = document.getElementById("submitPremios");
-                    const submitEsportesButton = document.getElementById("submitPremioEsportes");
-                    const submitTicketButton = document.getElementById("submitPremioTicket");
-
-                    // Função para trocar ícone no clique
-                    function toggleIcon(iconId) {
-                        const icon = document.getElementById(iconId);
-                        if (icon.classList.contains('fa-unlock')) {
-                            icon.classList.remove('fa-unlock');
-                            icon.classList.add('fa-lock');
-                            localStorage.setItem(iconId, 'locked'); // Salva o estado como "locked"
-                        } else {
-                            icon.classList.remove('fa-lock');
-                            icon.classList.add('fa-unlock');
-                            localStorage.setItem(iconId, 'unlocked'); // Salva o estado como "unlocked"
-                        }
-                    }
-
-                    // Função para enviar o formulário
-                    function sendForm(form) {
-                        const formData = new FormData(form);
-                        fetch(form.action, {
-                            method: 'POST',
-                            body: formData
-                        }).then(response => {
-                            // Lidar com a resposta se necessário
-                            console.log("Formulário enviado com sucesso");
-                        }).catch(error => {
-                            console.error("Erro ao enviar o formulário", error);
-                        });
-                    }
-
-                    // Eventos de clique
-                    submitGirosButton.addEventListener('click', (event) => {
-                        toggleIcon('icon-giros');
-                        sendForm(formGiros);
-                    });
-
-                    submitPremiosButton.addEventListener('click', (event) => {
-                        toggleIcon('icon-premios');
-                        sendForm(formPremios);
-                    });
-
-                    submitEsportesButton.addEventListener('click', (event) => {
-                        toggleIcon('icon-esportes');
-                        sendForm(formEsportes);
-                    });
-
-                    submitTicketButton.addEventListener('click', (event) => {
-                        toggleIcon('icon-ticket');
-                        sendForm(formTicket);
-                    });
-
-                    // Restaura o estado do ícone ao carregar a página
-                    function restoreIconState(iconId) {
-                        const state = localStorage.getItem(iconId);
-                        const icon = document.getElementById(iconId);
-                        if (state === 'locked') {
-                            icon.classList.remove('fa-unlock');
-                            icon.classList.add('fa-lock');
-                        } else {
-                            icon.classList.remove('fa-lock');
-                            icon.classList.add('fa-unlock');
-                        }
-                    }
-
-                    // Chama a função para restaurar o estado ao carregar a página
-                    restoreIconState('icon-giros');
-                    restoreIconState('icon-premios');
-                    restoreIconState('icon-esportes');
-                    restoreIconState('icon-ticket');
-                }
-
-                setupFormListeners(); // Chama a função para configurar os ouvintes
-            </script>
-
-            <div class="container mt-5">
+            <!-- <div class="container mt-5">
                 <h2 class="mb-4 titulo">Adicionar Evento</h2>
                 <div class="form-group">
                     <label for="tipoFormulario" class="mb-3">Selecione o tipo de formulário:</label>
@@ -400,108 +267,76 @@ require_once "../Dashboard/processamento/Auth.php";
                     </div>
                     <button type="submit" class="btn_envio">Adicionar Evento de Ticket</button>
                 </form>
-            </div>
-
-            <?php
-            require_once '../back-php/conexao.php'; // Inclua o arquivo de conexão
-
-            try {
-                // Conectar ao banco de dados usando PDO
-                $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password);
-                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            
-                // Consulta SQL para recuperar eventos de todas as tabelas
-                $sql = "
-                    SELECT id, titulo, imagem, banner, 'premiacao' AS tipo FROM eventos_premiacao
-                    UNION ALL
-                    SELECT id, titulo, imagem, banner, 'giros' AS tipo FROM eventos_giros
-                    UNION ALL
-                    SELECT id, titulo, imagem, banner, 'esportes' AS tipo FROM eventos_esportes
-                    UNION ALL
-                    SELECT id, titulo, imagem, banner, 'ticket' AS tipo FROM eventos_ticket
-                ";
-
-                $stmt = $conn->prepare($sql);
-                $stmt->execute();
-                $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            } catch (PDOException $e) {
-                echo "Erro ao recuperar eventos: " . $e->getMessage();
-            } finally {
-                $conn = null;
-            }
-            ?>
-
+            </div> -->
 
             <div class="container">
-                <h3 class="titulo mt-4 mb-4">Listagem de Eventos</h3>
+    <div class="row">
+        <?php if ($eventos && count($eventos) > 0): ?>
+            <?php foreach ($eventos as $evento): ?>
+                <div class="col-lg-4 col-md-4 col-sm-6 mb-4">
+                    <div class="card">
+                        <div class="d-flex mt-1 mb-1 justify-content-center">
+                            <button type="button" class="button-edit delete-button" data-bs-toggle="modal" 
+                                data-bs-target="#editModal<?= htmlspecialchars($evento['id']); ?>">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                        </div>
 
-                <div class="row">
-                    <?php if (!empty($eventos)) : ?>
-                        <?php foreach ($eventos as $evento) : ?>
-                            <div class="col-lg-4 col-md-4 col-sm-6 mb-4"> <!-- Ajustando a largura -->
-                                <div class="card">
-                                    <div class="d-flex mt-1 mb-1 justify-content-center">
-                                        <button type="button" class="button-edit delete-button" data-bs-toggle="modal" data-bs-target="#editModal<?php echo htmlspecialchars($evento['id']); ?>">
-                                            <i class="bi bi-pencil-fill"></i>
-                                        </button>
-                                    </div>
+                        <!-- Exibição do Banner -->
+                        <?php if (!empty($evento['banner'])): ?>
+                            <img src="data:image/jpeg;base64,<?= base64_encode($evento['banner']); ?>" 
+                                class="card-img-top" alt="Imagem do Evento" 
+                                style="height: 50%; object-fit: cover;" loading="lazy">
+                        <?php endif; ?>
 
-                                    <!-- Exibição do Banner -->
-                                    <?php if (!empty($evento['banner'])) : ?>
-                                        <img src="data:image/jpeg;base64,<?php echo base64_encode($evento['banner']); ?>"
-                                            class="card-img-top"
-                                            alt="Imagem do Evento"
-                                            style="height: 50%; object-fit: cover;"
-                                            loading="lazy">
-                                    <?php endif; ?>
+                        <div class="card-body text-center">
+                            <h5 class="card-title"><?= htmlspecialchars($evento['titulo']); ?></h5>
 
-                                    <div class="card-body text-center">
-                                        <h5 class="card-title"><?php echo htmlspecialchars($evento['titulo']); ?></h5>
-
-                                        <!-- Modal de Editar -->
-                                        <div class="modal fade" id="editModal<?php echo $evento['id']; ?>" tabindex="-1" aria-labelledby="editModalLabel<?php echo $evento['id']; ?>" aria-hidden="true">
-                                            <div class="modal-dialog modal-lg">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="editModalLabel<?php echo $evento['id']; ?>">Editar Evento</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form action="./processamento/editar_evento.php" method="POST" enctype="multipart/form-data">
-                                                            <div class="mb-3">
-                                                                <label for="titulo<?php echo $evento['id']; ?>" class="form-label">Título:</label>
-                                                                <input type="text" class="form-control" id="titulo<?php echo $evento['id']; ?>" name="titulo" value="<?php echo htmlspecialchars($evento['titulo']); ?>" required>
-                                                                <input type="hidden" name="id" value="<?php echo $evento['id']; ?>">
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label for="banner<?php echo $evento['id']; ?>" class="form-label">Banner:</label>
-                                                                <input type="file" class="form-control" id="banner<?php echo $evento['id']; ?>" name="banner">
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label for="imagem<?php echo $evento['id']; ?>" class="form-label">Imagem:</label>
-                                                                <input type="file" class="form-control" id="imagem<?php echo $evento['id']; ?>" name="imagem">
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="submit" class="button-delete button-option">Salvar Mudanças</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
+                            <!-- Modal de Editar -->
+                            <div class="modal fade" id="editModal<?= $evento['id']; ?>" tabindex="-1" 
+                                aria-labelledby="editModalLabel<?= $evento['id']; ?>" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel<?= $evento['id']; ?>">Editar Evento</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="./processamento/editar_evento.php" method="POST" 
+                                                enctype="multipart/form-data">
+                                                <input type="hidden" name="id" value="<?= $evento['id']; ?>">
+                                                <div class="mb-3">
+                                                    <label for="titulo<?= $evento['id']; ?>" class="form-label">Título:</label>
+                                                    <input type="text" class="form-control" id="titulo<?= $evento['id']; ?>" 
+                                                        name="titulo" value="<?= htmlspecialchars($evento['titulo']); ?>" required>
                                                 </div>
-                                            </div>
+                                                <div class="mb-3">
+                                                    <label for="banner<?= $evento['id']; ?>" class="form-label">Banner:</label>
+                                                    <input type="file" class="form-control" id="banner<?= $evento['id']; ?>" 
+                                                        name="banner">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="imagem<?= $evento['id']; ?>" class="form-label">Imagem:</label>
+                                                    <input type="file" class="form-control" id="imagem<?= $evento['id']; ?>" 
+                                                        name="imagem">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="button-delete button-option">Salvar Mudanças</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                        <?php endforeach; ?>
-                    <?php else : ?>
-                        <p class="text-center">Nenhum evento encontrado.</p>
-                    <?php endif; ?>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-
-
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p class="text-center">Nenhum evento encontrado.</p>
+        <?php endif; ?>
+    </div>
+</div>
             </form>
         </div>
         <!-- Agenda Form Fim -->
@@ -509,39 +344,16 @@ require_once "../Dashboard/processamento/Auth.php";
     </main>
 
     <script defer>
-        function mostrarFormulario(tipo) {
-            // Seleciona os formulários
-            const formularioGiro = document.getElementById('formularioGiro');
-            const formularioPremiacao = document.getElementById('formularioPremiacao');
-            const formularioEsportes = document.getElementById('formularioEsportes');
-            const formularioTicket = document.getElementById('formularioTicket');
-
-            // Oculta ambos os formulários
-            formularioGiro.style.display = 'none';
-            formularioPremiacao.style.display = 'none';
-            formularioEsportes.style.display = 'none';
-            formularioTicket.style.display = 'none';
-
-            // Mostra o formulário correspondente
-            if (tipo === 'giro') {
-                formularioGiro.style.display = 'block';
-            } else if (tipo === 'premiacao') {
-                formularioPremiacao.style.display = 'block';
-            } else if (tipo === 'esportes') {
-                formularioEsportes.style.display = 'block';
-            } else if (tipo === 'ticket') {
-                formularioTicket.style.display = 'block';
-            }
-        }
+       
     </script>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous" defer></script>
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"
+        defer></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyJ0I72fLevddux1FRXr+8f77kyJyE05bM"
-        crossorigin="anonymous" defer></script>
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyJ0I72fLevddux1FRXr+8f77kyJyE05bM" crossorigin="anonymous"
+        defer></script>
 
 </body>
 

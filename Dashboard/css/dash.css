@@ -155,21 +155,11 @@
 
 /* Títulos */
 .titulo {
-    font-size: 30px;
+    font-size: 20px;
     font-weight: bold;
-    letter-spacing: 0.1em;
     color: var(--text-color);
     text-decoration: overline;
     text-decoration-color: var(--text-color);
-}
-
-.titulo2 {
-    color: var(--text-color);
-    text-decoration: overline;
-    text-decoration-color: var(--text-color);
-    font-size: 30px;
-    font-weight: bold;
-    margin: 30px 0 10px;
 }
 
 /* Botão de envio */
