@@ -36,6 +36,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     $codigo = filter_input(INPUT_POST, 'codigo', FILTER_SANITIZE_SPECIAL_CHARS);
 
+    // Remove os espaços do campo 'codigo'
+    $codigo = str_replace(' ', '', $codigo);
+
     // Verifica se todos os dados são válidos
     if (!$nome || !$email || !$codigo) {
         $_SESSION['message'] = 'Dados inválidos. Por favor, preencha todos os campos corretamente.';

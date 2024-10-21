@@ -52,6 +52,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $placar_segundo_jogo = filter_input(INPUT_POST, 'segundo_jogo', FILTER_SANITIZE_SPECIAL_CHARS);
     $placar_terceiro_jogo = filter_input(INPUT_POST, 'terceiro_jogo', FILTER_SANITIZE_SPECIAL_CHARS);
 
+    $codigo = str_replace(' ', '', $codigo);
+
     if (!validar_cpf($cpf)) {
         $_SESSION['message'] = 'CPF inválido. Por favor, insira um CPF válido.';
         $_SESSION['messageClass'] = 'error';
