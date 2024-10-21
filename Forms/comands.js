@@ -202,3 +202,14 @@ function setupFormListeners() {
 }
 
 setupFormListeners(); // Chama a função para configurar os ouvintes
+
+function handleSubmit() {
+    const recaptchaResponse = grecaptcha.getResponse(); // Obtém a resposta do reCAPTCHA
+
+    if (!recaptchaResponse) {
+        alert("Por favor, complete o CAPTCHA.");
+        return false; // Impede o envio do formulário
+    }
+
+    return true; // Permite o envio do formulário
+}

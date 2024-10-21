@@ -56,67 +56,77 @@ try {
             $siteKey = '6LdcnV0qAAAAAMGGUszs1Qfy90aWwRoVtWNmiUIM'; // Substitua pela sua site key do reCAPTCHA
             $secretKey = '6LdcnV0qAAAAAO0dhcpdmD_65NLVsz4doG8L5Xly'; // Substitua pela sua secret key do reCAPTCHA
             $htmlFormulario = '
-                <form id="formulario2" class="form" method="POST" action="../Dashboard/processamento/insert_dados-esportes.php" enctype="multipart/form-data">
-                    <input type="hidden" name="csrf_token" value="' . htmlspecialchars($csrf_token, ENT_QUOTES, 'UTF-8') . '">
-                    <input type="hidden" name="id" value="' . (isset($id) ? htmlspecialchars($id, ENT_QUOTES, 'UTF-8') : '') . '">
-                    
-                    <div class="form-group">
-                        <input type="text" name="nome" id="nome" placeholder="Informe seu nome" 
-                            value="' . (isset($nome) ? htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') : '') . '" 
-                            required pattern="[A-Za-z\s]+" title="Digite apenas letras e espaços.">
-                    </div>
+            <form id="formulario2" class="form" method="POST" action="../Dashboard/processamento/insert_dados-esportes.php" enctype="multipart/form-data" onsubmit="return handleSubmit()">
+                <input type="hidden" name="csrf_token" value="' . htmlspecialchars($csrf_token, ENT_QUOTES, 'UTF-8') . '">
+                <input type="hidden" name="id" value="' . (isset($id) ? htmlspecialchars($id, ENT_QUOTES, 'UTF-8') : '') . '">
+                
+                <div class="form-group">
+                    <input type="text" name="nome" id="nome" placeholder="Informe seu nome" 
+                        value="' . (isset($nome) ? htmlspecialchars($nome, ENT_QUOTES, 'UTF-8') : '') . '" 
+                        required pattern="[A-Za-z\s]+" title="Digite apenas letras e espaços.">
+                </div>
 
-                    <div class="form-group">
-                        <input type="text" id="cpf" name="cpf" placeholder="Informe seu CPF" 
-                            value="' . (isset($cpf) ? htmlspecialchars($cpf, ENT_QUOTES, 'UTF-8') : '') . '" 
-                            required oninput="mascaraCPF(this)" 
-                            maxlength="14" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}">
-                    </div>
+                <div class="form-group">
+                    <input type="text" id="cpf" name="cpf" placeholder="Informe seu CPF" 
+                        value="' . (isset($cpf) ? htmlspecialchars($cpf, ENT_QUOTES, 'UTF-8') : '') . '" 
+                        required oninput="mascaraCPF(this)" 
+                        maxlength="14" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}">
+                </div>
 
-                    <div class="form-group">
-                        <h4> Celta de Vigo x Real Madrid - 19/10 </h4>
-                        <input type="text" id="villareal" name="villareal" placeholder="Placar exato - Exemplo placar 2x5" 
-                            value="' . (isset($villareal) ? htmlspecialchars($villareal, ENT_QUOTES, 'UTF-8') : '') . '" 
+                <div class="form-group">
+                    <h4> Celta de Vigo x Real Madrid - 19/10 </h4>
+                    <input type="text" id="primeiro_jogo" name="primeiro_jogo" placeholder="Placar exato - Exemplo placar 2x5" 
+                        value="' . (isset($primeiro_jogo) ? htmlspecialchars($primeiro_jogo, ENT_QUOTES, 'UTF-8') : '') . '" 
+                    oninput="mascaraPlacar(this)" maxlength="3" pattern="\d+x\d+" required>
+                </div>
+                <div class="form-group">
+                    <h4>Internacional x Grêmio - 19/10</h4>
+                    <input type="text" id="segundo_jogo" name="segundo_jogo" placeholder="Placar exato - Exemplo placar 3x1" 
+                        value="' . (isset($segundo_jogo) ? htmlspecialchars($segundo_jogo, ENT_QUOTES, 'UTF-8') : '') . '" 
                         oninput="mascaraPlacar(this)" maxlength="3" pattern="\d+x\d+" required>
-                    </div>
-                    <div class="form-group">
-                        <h4>Internacional x Grêmio - 19/10</h4>
-                        <input type="text" id="bahia" name="bahia" placeholder="Placar exato - Exemplo placar 3x1" 
-                            value="' . (isset($bahia) ? htmlspecialchars($bahia, ENT_QUOTES, 'UTF-8') : '') . '" 
-                            oninput="mascaraPlacar(this)" maxlength="3" pattern="\d+x\d+" required>
-                    </div>
-                    <div class="form-group">
-                        <h4>Vasco da gama x Atlético Mineiro - 19/10</h4>
-                        <input type="text" id="palmeiras" name="palmeiras" placeholder="Placar exato - Exemplo placar 4x4" 
-                            value="' . (isset($palmeiras) ? htmlspecialchars($palmeiras, ENT_QUOTES, 'UTF-8') : '') . '" 
-                            oninput="mascaraPlacar(this)" maxlength="3" pattern="\d+x\d+" required>
-                    </div>
+                </div>
+                <div class="form-group">
+                    <h4>Vasco da gama x Atlético Mineiro - 19/10</h4>
+                    <input type="text" id="terceiro_jogo" name="terceiro_jogo" placeholder="Placar exato - Exemplo placar 4x4" 
+                        value="' . (isset($terceiro_jogo) ? htmlspecialchars($terceiro_jogo, ENT_QUOTES, 'UTF-8') : '') . '" 
+                        oninput="mascaraPlacar(this)" maxlength="3" pattern="\d+x\d+" required>
+                </div>
 
-                    <h1>ID DA SUA CONTA REALS - <strong class="regras"><em>SOMENTE OS NÚMEROS, NÃO COLOCAR "ID#"</em></strong></h1>
-                    <p>Acesse "MENU" ➜ "CARTEIRA/PERFIL" ➜ DIGITE <strong><em>SOMENTE OS NÚMEROS</em></strong> DA ID QUE APARECER</p>
-                    <div class="imagens">
-                        ' . $imagem . '
-                    </div>
-                    <div class="form-group foto">
-                        <input type="text" id="codigo" name="codigo" placeholder="Digite seu ID aqui" 
-                            value="' . (isset($codigo) ? htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') : '') . '">
-                    </div>
-                    
-                    <div class="form-group">
-                        <button type="submit">Enviar</button>
-                    </div>
-                </form>
-                <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-                <script>
-                    document.getElementById("formulario2").onsubmit = function(event) {
-                        var recaptchaResponse = grecaptcha.getResponse();
-                        if (recaptchaResponse.length === 0) {
-                            event.preventDefault(); // Impede o envio do formulário
-                            alert("Por favor, complete o reCAPTCHA.");
-                        }
-                    };
-                </script>
-';
+                <h1>ID DA SUA CONTA REALS - <strong class="regras"><em>SOMENTE OS NÚMEROS, NÃO COLOCAR "ID#"</em></strong></h1>
+                <p>Acesse "MENU" ➜ "CARTEIRA/PERFIL" ➜ DIGITE <strong><em>SOMENTE OS NÚMEROS</em></strong> DA ID QUE APARECER</p>
+                <div class="imagens">
+                    ' . $imagem . '
+                </div>
+                <div class="form-group foto">
+                    <input type="text" id="codigo" name="codigo" placeholder="Digite seu ID aqui" 
+                        value="' . (isset($codigo) ? htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') : '') . '">
+                </div>
+                
+                <!-- Adiciona o widget do reCAPTCHA -->
+                <div class="form-group">
+                    <div class="g-recaptcha" data-sitekey="' . $siteKey . '"></div>
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit">Enviar</button>
+                </div>
+            </form>
+            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+            <script>
+            function handleSubmit() {
+                const recaptchaResponse = grecaptcha.getResponse(); // Obtém a resposta do reCAPTCHA
+
+                if (!recaptchaResponse) {
+                    alert("Por favor, complete o CAPTCHA.");
+                    return false; // Impede o envio do formulário
+                }
+
+                return true; // Permite o envio do formulário
+            }
+            </script>
+        ';
+
         } else {
             // Exibe mensagem de formulário fechado
             $htmlFormulario = '<p>O formulário está fechado no momento.</p>';
@@ -153,13 +163,17 @@ try {
                 Estar inscrito no <a href="https://t.me/comunidadereals">CANAL do TELEGRAM</a>;<br>
                 Seguir a <a href="https://www.instagram.com/reals.bet/">REALS no INSTAGRAM</a>;<br>
                 Preencher o formulário abaixo <strong class="regras">CORRETAMENTE</strong>;<br>
-                Caso não esteja cumprindo as 3 regras, <strong class="regras">NÃO RECEBERÁ AS PREMIAÇÕES</strong>.<br><br><br>
-                Preencha somente UMA <strong>ÚNICA VEZ</strong> o formulário com seus <strong>DADOS CORRETOS</strong> utilizados na <a href="https://realsbet.com/signup">REALS BET</a>.<br>
+                Caso não esteja cumprindo as 3 regras, <strong class="regras">NÃO RECEBERÁ AS
+                    PREMIAÇÕES</strong>.<br><br><br>
+                Preencha somente UMA <strong>ÚNICA VEZ</strong> o formulário com seus <strong>DADOS CORRETOS</strong>
+                utilizados na <a href="https://realsbet.com/signup">REALS BET</a>.<br>
                 Caso não tenha conta na Reals Bet, <a href="https://realsbet.com/signup">CADASTRE-SE AQUI!</a>
             </p>
         </div>
 
-        <p id="message" class="message" class="<?php echo htmlspecialchars($messageClass); ?>"><?php echo htmlspecialchars($message); ?></p>
+        <p id="message" class="message" class="<?php echo htmlspecialchars($messageClass); ?>">
+            <?php echo htmlspecialchars($message); ?>
+        </p>
 
         <div id="form-container">
             <?php echo $htmlFormulario; ?>
@@ -167,7 +181,8 @@ try {
 
         <div class="footer">
             <p>&copy; 2024 Reals. Todos os direitos reservados.</p>
-            <button id="shareBtn" class="compartilhar"><i class="fas fa-share-alt"></i> Compartilhar com os seus amigos</button>
+            <button id="shareBtn" class="compartilhar"><i class="fas fa-share-alt"></i> Compartilhar com os seus
+                amigos</button>
         </div>
 
         <!-- Modal de Compartilhamento -->
@@ -176,9 +191,12 @@ try {
                 <span class="close">&times;</span>
                 <h2>Compartilhe com seus amigos</h2>
                 <div class="social-share">
-                    <a id="whatsappShare" href="#" target="_blank" title="Compartilhar no WhatsApp"><i class="fab fa-whatsapp icon"></i> WhatsApp</a>
-                    <a id="facebookShare" href="#" target="_blank" title="Compartilhar no Facebook"><i class="fab fa-facebook-f icon"></i> Facebook</a>
-                    <a id="emailShare" href="#" target="_blank" title="Compartilhar por E-mail"><i class="fas fa-envelope icon"></i> E-mail</a>
+                    <a id="whatsappShare" href="#" target="_blank" title="Compartilhar no WhatsApp"><i
+                            class="fab fa-whatsapp icon"></i> WhatsApp</a>
+                    <a id="facebookShare" href="#" target="_blank" title="Compartilhar no Facebook"><i
+                            class="fab fa-facebook-f icon"></i> Facebook</a>
+                    <a id="emailShare" href="#" target="_blank" title="Compartilhar por E-mail"><i
+                            class="fas fa-envelope icon"></i> E-mail</a>
                 </div>
                 <div class="share-link">
                     <input type="text" id="shareUrl" readonly>
@@ -187,8 +205,8 @@ try {
             </div>
         </div>
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                document.getElementById("copyLink").addEventListener("click", function() {
+            document.addEventListener("DOMContentLoaded", function () {
+                document.getElementById("copyLink").addEventListener("click", function () {
                     const shareInput = document.getElementById("shareUrl");
 
                     if (shareInput) {
@@ -211,7 +229,7 @@ try {
                 });
             });
         </script>
-        <script src="comand.js"></script>
+        <script src="comands.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6/jquery.inputmask.min.js"></script>
         <script>

@@ -24,10 +24,10 @@ try {
 
     // Consulta para selecionar os dados da tabela 'esportes'
     // Ajuste o horário para o fuso de São Paulo (UTC-3) caso o horário esteja em UTC no banco de dados
-    $sql = "SELECT nome_completo, cpf, id_conta_reals, placar_exato_rm_villareal,
-placar_exato_bahia_flamengo, placar_exato_rb_braga_palmeiras, 
-DATE_FORMAT(CONVERT_TZ(created_at, '+00:00', '-03:00'), '%Y-%m-%d %H:%i:%s') as created_at 
-FROM esportes";
+    $sql = "SELECT nome_completo, cpf, id_conta_reals, placar_primeiro_jogo,
+            placar_segundo_jogo, placar_terceiro_jogo, 
+            DATE_FORMAT(CONVERT_TZ(created_at, '+00:00', '-03:00'), '%Y-%m-%d %H:%i:%s') as created_at 
+            FROM esportes";
 
     $stmt = $conn->prepare($sql);
     $stmt->execute();
@@ -43,7 +43,7 @@ FROM esportes";
     fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
     // Escreve o cabeçalho do CSV
-    fputcsv($output, ['Nome', 'CPF', 'ID Reals', 'Placar RM vs Villareal', 'Placar Bahia vs Flamengo', 'Placar Braga vs Palmeiras', 'Data/Hora'], ';');
+    fputcsv($output, ['Nome', 'CPF', 'ID Reals', 'Placar Primeiro Jogo', 'Placar Segundo Jogo', 'Placar Terceiro Jogo', 'Data/Hora'], ';');
 
     // Escreve os dados no CSV
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {

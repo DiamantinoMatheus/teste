@@ -9,15 +9,12 @@ $secret_key = 'sua_chave_super_secreta'; // NÃO armazene isso diretamente no c�
 // Função para criptografar o e-mail
 function encrypt_email($email, $key)
 {
-    // Vetor de inicialização (IV) de 16 bytes (deve ser único para cada criptografia)
     $iv = openssl_random_pseudo_bytes(16);
-    // Criptografa o e-mail
     $encrypted_email = openssl_encrypt($email, 'aes-256-cbc', $key, 0, $iv);
-    // Retorna o IV junto com o e-mail criptografado, pois ele será necessário para descriptografar
     return base64_encode($encrypted_email . '::' . $iv);
 }
 
-// Função para descriptografar o e-mail (usada ao exportar)
+// Função para descriptografar o e-mail
 function decrypt_email($encrypted_email, $key)
 {
     list($encrypted_data, $iv) = explode('::', base64_decode($encrypted_email), 2);
@@ -54,27 +51,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Verifica se o código ou e-mail já foi utilizado
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM giros WHERE codigo = :codigo OR email = :email");
-        $stmt->bindParam(':codigo', $codigo);
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
-        $count = $stmt->fetchColumn();
+        // Criptografa o e-mail fornecido
+        $email_encrypted = encrypt_email($email, $secret_key);
 
-        if ($count > 0) {
+        // Verifica se o e-mail já foi utilizado
+        $checkStmt = $conn->prepare("SELECT email FROM giros");
+        $checkStmt->execute();
+        $email_exists = false;
+
+        // Loop para verificar se algum e-mail descriptografado bate com o fornecido
+        while ($row = $checkStmt->fetch(PDO::FETCH_ASSOC)) {
+            $stored_email_encrypted = $row['email'];
+            $stored_email_decrypted = decrypt_email($stored_email_encrypted, $secret_key);
+
+            if ($stored_email_decrypted === $email) {
+                $email_exists = true;
+                break;
+            }
+        }
+
+        // Verifica se o e-mail já foi utilizado
+        if ($email_exists) {
             $_SESSION['message'] = 'O código ou e-mail informado já foi utilizado. Por favor, forneça um código ou e-mail diferente.';
             $_SESSION['messageClass'] = 'error';
             header("Location: ../../Forms/giros.php");
             exit();
         }
 
-        // Criptografa o e-mail antes de salvar
-        $email_criptografado = encrypt_email($email, $secret_key);
-
         // Insere os dados no banco
         $stmt = $conn->prepare("INSERT INTO giros (nome, email, codigo) VALUES (:nome, :email, :codigo)");
         $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':email', $email_criptografado); // Salva o e-mail criptografado
+        $stmt->bindParam(':email', $email_encrypted); // Salva o e-mail criptografado
         $stmt->bindParam(':codigo', $codigo);
 
         if ($stmt->execute()) {
@@ -93,3 +100,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header("Location: ../../Forms/giros.php");
     exit();
 }
+?>

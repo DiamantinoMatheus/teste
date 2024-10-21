@@ -77,7 +77,10 @@ try {
             <input type="text" id="codigo" name="codigo" placeholder="Digite seu ID aqui" 
                 value="' . (isset($codigo) ? htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') : '') . '">
         </div>
-
+                <!-- Adiciona o widget do reCAPTCHA -->
+                <div class="form-group">
+                    <div class="g-recaptcha" data-sitekey="' . $siteKey . '"></div>
+                </div>
         <div class="form-group">
             <button type="submit">Enviar</button>
         </div>
@@ -85,6 +88,7 @@ try {
     
     <!-- Adiciona o script do reCAPTCHA -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+   
 ';
 
             // Processamento do formulário
@@ -142,7 +146,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Função de validação do ID
-function validarID($id) {
+function validarID($id)
+{
     // Verifique se o ID atende às suas regras de validação
     // Por exemplo, verificar se é um número e está em um formato específico
     return preg_match('/^[0-9]+$/', $id); // Apenas um exemplo: verifica se o ID é um número
@@ -174,13 +179,17 @@ function validarID($id) {
                 Estar inscrito no <a href="https://t.me/comunidadereals">CANAL do TELEGRAM</a>;<br>
                 Seguir a <a href="https://www.instagram.com/reals.bet/">REALS no INSTAGRAM</a>;<br>
                 Preencher o formulário abaixo <strong class="regras">CORRETAMENTE</strong>;<br>
-                Caso não esteja cumprindo as 3 regras, <strong class="regras">NÃO RECEBERÁ AS PREMIAÇÕES</strong>.<br><br><br>
-                Preencha somente UMA <strong>ÚNICA VEZ</strong> o formulário com seus <strong>DADOS CORRETOS</strong> utilizados na <a href="https://realsbet.com/signup">REALS BET</a>.<br>
+                Caso não esteja cumprindo as 3 regras, <strong class="regras">NÃO RECEBERÁ AS
+                    PREMIAÇÕES</strong>.<br><br><br>
+                Preencha somente UMA <strong>ÚNICA VEZ</strong> o formulário com seus <strong>DADOS CORRETOS</strong>
+                utilizados na <a href="https://realsbet.com/signup">REALS BET</a>.<br>
                 Caso não tenha conta na Reals Bet, <a href="https://realsbet.com/signup">CADASTRE-SE AQUI!</a>
             </p>
         </div>
 
-        <p id="message" class="message" class="<?php echo htmlspecialchars($messageClass); ?>"><?php echo htmlspecialchars($message); ?></p>
+        <p id="message" class="message" class="<?php echo htmlspecialchars($messageClass); ?>">
+            <?php echo htmlspecialchars($message); ?>
+        </p>
 
 
         <div id="form-container">
@@ -189,7 +198,8 @@ function validarID($id) {
 
         <div class="footer">
             <p>&copy; 2024 Reals. Todos os direitos reservados.</p>
-            <button id="shareBtn" class="compartilhar"><i class="fas fa-share-alt"></i> Compartilhar com os seus amigos</button>
+            <button id="shareBtn" class="compartilhar"><i class="fas fa-share-alt"></i> Compartilhar com os seus
+                amigos</button>
         </div>
 
         <!-- Modal de Compartilhamento -->
@@ -198,9 +208,12 @@ function validarID($id) {
                 <span class="close">&times;</span>
                 <h2>Compartilhe com seus amigos</h2>
                 <div class="social-share">
-                    <a id="whatsappShare" href="#" target="_blank" title="Compartilhar no WhatsApp"><i class="fab fa-whatsapp icon"></i> WhatsApp</a>
-                    <a id="facebookShare" href="#" target="_blank" title="Compartilhar no Facebook"><i class="fab fa-facebook-f icon"></i> Facebook</a>
-                    <a id="emailShare" href="#" target="_blank" title="Compartilhar por E-mail"><i class="fas fa-envelope icon"></i> E-mail</a>
+                    <a id="whatsappShare" href="#" target="_blank" title="Compartilhar no WhatsApp"><i
+                            class="fab fa-whatsapp icon"></i> WhatsApp</a>
+                    <a id="facebookShare" href="#" target="_blank" title="Compartilhar no Facebook"><i
+                            class="fab fa-facebook-f icon"></i> Facebook</a>
+                    <a id="emailShare" href="#" target="_blank" title="Compartilhar por E-mail"><i
+                            class="fas fa-envelope icon"></i> E-mail</a>
                 </div>
                 <div class="share-link">
                     <input type="text" id="shareUrl" readonly>
@@ -210,8 +223,8 @@ function validarID($id) {
         </div>
 
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                document.getElementById("copyLink").addEventListener("click", function() {
+            document.addEventListener("DOMContentLoaded", function () {
+                document.getElementById("copyLink").addEventListener("click", function () {
                     const shareInput = document.getElementById("shareUrl");
 
                     if (shareInput) {
@@ -247,7 +260,7 @@ function validarID($id) {
                 }
             }
         </script>
-        <script src="comand.js"></script>
+        <script src="comands.js"></script>
 </body>
 
 </html>

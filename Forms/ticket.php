@@ -81,6 +81,11 @@ try {
                         <input type="text" name="instagram" id="instagram" placeholder="Informe seu Instagram" value="' . (isset($instagram) ? htmlspecialchars($instagram, ENT_QUOTES, 'UTF-8') : '') . '" maxlength="50">
                     </div>
                     <div class="imagens">' . $imagem . '</div>
+
+                        <!-- Adiciona o widget do reCAPTCHA -->
+                        <div class="form-group">
+                            <div class="g-recaptcha" data-sitekey="' . $siteKey . '"></div>
+                        </div>
                     <div class="form-group">
                         <button type="submit">Enviar</button>
                     </div>
@@ -220,7 +225,7 @@ try {
                 element.value = rg;
             }
         </script>
-        <script src="comand.js"></script>
+        <script src="comands.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6/jquery.inputmask.min.js"></script>
 

@@ -251,6 +251,24 @@ body {
     outline: none;
 }
 
+#captcha-form {
+    text-align: center;
+    /* Centraliza o texto dentro do formulário */
+    padding: 20px;
+    /* Adiciona espaçamento interno */
+    border: 1px solid #ccc;
+    /* Adiciona uma borda ao formulário */
+    border-radius: 8px;
+    /* Arredonda as bordas do formulário */
+    background-color: #f9f9f9;
+    /* Adiciona uma cor de fundo */
+}
+
+.g-recaptcha {
+    margin: 0 auto; /* Centraliza o reCAPTCHA */
+    box-sizing: border-box;
+}
+
 /* Estilo do modal */
 .modal {
     display: none;
