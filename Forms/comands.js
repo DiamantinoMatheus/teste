@@ -92,9 +92,10 @@ inputsTexto.forEach(function (input) {
 });
 
 document.getElementById('codigo').addEventListener('input', function (e) {
-    // Remove letras e os caracteres indesejados, incluindo o hífen (-)
-    this.value = this.value.replace(/[a-zA-Z.,()$¨%@!&*/:€£¥•‘’”“[\]~´`-ÇçáàéèÈÁÉÈÀóòÓÒúùÚÙÍÌíì'"+=-_^#@{}/|;]/g, '');
+    // Remove letras, caracteres indesejados, incluindo o hífen (-) e espaços
+    this.value = this.value.replace(/[a-zA-Z.,()$¨%@!&*/:€£¥•‘’”“[\]~´`-ÇçáàéèÈÁÉÈÀóòÓÒúùÚÙÍÌíì'"+=-_^#@{}/|;\s]/g, '');
 });
+
 
 function mostrarFormulario(tipo) {
     // Seleciona os formulários
