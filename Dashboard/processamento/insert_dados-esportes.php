@@ -1,44 +1,38 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+session_start();
+
+// Regenera o token CSRF se não existir
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-// Chave de criptografia (mantenha isso seguro, use uma variável de ambiente)
-$secret_key = 'sua_chave_super_secreta'; // NÃO armazene isso diretamente no código em produção!
+$secret_key = getenv('SECRET_KEY');
 
-// Função para criptografar o CPF
-function encrypt_cpf($cpf, $key)
-{
-    $iv = openssl_random_pseudo_bytes(16); // Vetor de inicialização (IV)
-    $encrypted_cpf = openssl_encrypt($cpf, 'aes-256-cbc', $key, 0, $iv);
-    return base64_encode($encrypted_cpf . '::' . $iv); // Retorna CPF criptografado + IV
+function encrypt_cpf($cpf, $key) {
+    $salt = openssl_random_pseudo_bytes(16);
+    $iv = openssl_random_pseudo_bytes(16);
+    return base64_encode(openssl_encrypt($cpf, 'aes-256-cbc', $key . $salt, 0, $iv) . '::' . base64_encode($iv) . '::' . base64_encode($salt));
 }
 
-// Função para descriptografar o CPF
-function decrypt_cpf($encrypted_cpf, $key)
-{
-    list($encrypted_data, $iv) = explode('::', base64_decode($encrypted_cpf), 2);
-    return openssl_decrypt($encrypted_data, 'aes-256-cbc', $key, 0, $iv);
+function hash_cpf($cpf) {
+    return hash('sha256', $cpf);
 }
 
-// Função para validar CPF
 function validar_cpf($cpf) {
-    $cpf = preg_replace('/[^0-9]/', '', $cpf); // Remove caracteres não numéricos
-    if (strlen($cpf) != 11 || preg_match('/(\d)\1{10}/', $cpf)) return false; // CPF inválido
-    
+    $cpf = preg_replace('/[^0-9]/', '', $cpf);
+    if (strlen($cpf) != 11 || preg_match('/(\d)\1{10}/', $cpf)) return false;
+
     for ($t = 9; $t < 11; $t++) {
         for ($d = 0, $c = 0; $c < $t; $c++) {
             $d += $cpf[$c] * (($t + 1) - $c);
         }
-        $d = ((10 * $d) % 11) % 10;
-        if ($cpf[$c] != $d) return false;
+        if ($cpf[$c] != ((10 * $d) % 11) % 10) return false;
     }
     return true;
 }
 
-// Verifique se o formulário foi enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    if (empty($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['message'] = 'Erro: Token CSRF inválido.';
         $_SESSION['messageClass'] = 'error';
         header("Location: ../../Forms/esportes.php");
@@ -46,22 +40,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $nome_completo = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $cpf = filter_input(INPUT_POST, 'cpf', FILTER_SANITIZE_SPECIAL_CHARS);
-    $codigo = filter_input(INPUT_POST, 'codigo', FILTER_VALIDATE_INT);
-    $placar_primeiro_jogo = filter_input(INPUT_POST, 'primeiro_jogo', FILTER_SANITIZE_SPECIAL_CHARS);
-    $placar_segundo_jogo = filter_input(INPUT_POST, 'segundo_jogo', FILTER_SANITIZE_SPECIAL_CHARS);
-    $placar_terceiro_jogo = filter_input(INPUT_POST, 'terceiro_jogo', FILTER_SANITIZE_SPECIAL_CHARS);
+    $cpf = filter_input(INPUT_POST, 'cpf', FILTER_SANITIZE_STRING);
+    $codigo = str_replace(' ', '', filter_input(INPUT_POST, 'codigo', FILTER_SANITIZE_STRING));
+    $placares = array_map(function($field) {
+        return filter_input(INPUT_POST, $field, FILTER_SANITIZE_SPECIAL_CHARS);
+    }, ['primeiro_jogo', 'segundo_jogo', 'terceiro_jogo']);
 
-    $codigo = str_replace(' ', '', $codigo);
-
-    if (!validar_cpf($cpf)) {
-        $_SESSION['message'] = 'CPF inválido. Por favor, insira um CPF válido.';
-        $_SESSION['messageClass'] = 'error';
-        header("Location: ../../Forms/esportes.php");
-        exit();
-    }
-
-    if (!$nome_completo || !$cpf || !$codigo || !$placar_primeiro_jogo || !$placar_segundo_jogo || !$placar_terceiro_jogo) {
+    if (!validar_cpf($cpf) || !$nome_completo || !$codigo || in_array('', $placares)) {
         $_SESSION['message'] = 'Dados inválidos. Por favor, preencha todos os campos corretamente.';
         $_SESSION['messageClass'] = 'error';
         header("Location: ../../Forms/esportes.php");
@@ -74,60 +59,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Criptografa o CPF fornecido
         $cpf_encrypted = encrypt_cpf($cpf, $secret_key);
+        $cpf_hashed = hash_cpf($cpf);
 
-        // Verifica se o CPF já existe no banco de dados (comparando CPF descriptografado)
-        $checkStmt = $conn->prepare("SELECT cpf FROM esportes");
-        $checkStmt->execute();
-        $cpf_exists = false;
-
-        // Loop para verificar se algum CPF descriptografado bate com o fornecido
-        while ($row = $checkStmt->fetch(PDO::FETCH_ASSOC)) {
-            $stored_cpf_encrypted = $row['cpf'];
-            $stored_cpf_decrypted = decrypt_cpf($stored_cpf_encrypted, $secret_key);
-
-            if ($stored_cpf_decrypted === $cpf) {
-                $cpf_exists = true;
-                break;
-            }
-        }
-
-        if ($cpf_exists) {
+        $checkCpfStmt = $conn->prepare("SELECT COUNT(*) FROM esportes WHERE cpf_hash = :cpf_hash");
+        $checkCpfStmt->execute([':cpf_hash' => $cpf_hashed]);
+        
+        if ($checkCpfStmt->fetchColumn() > 0) {
             $_SESSION['message'] = 'O CPF já está registrado.';
             $_SESSION['messageClass'] = 'error';
             header("Location: ../../Forms/esportes.php");
             exit();
         }
 
-        // Verifica se o id_conta_reals já existe na tabela
         $checkIdStmt = $conn->prepare("SELECT COUNT(*) FROM esportes WHERE id_conta_reals = :codigo");
-        $checkIdStmt->bindParam(':codigo', $codigo);
-        $checkIdStmt->execute();
-        $id_exists = $checkIdStmt->fetchColumn();
-
-        if ($id_exists > 0) {
+        $checkIdStmt->execute([':codigo' => $codigo]);
+        
+        if ($checkIdStmt->fetchColumn() > 0) {
             $_SESSION['message'] = 'O ID da conta já está registrado. Por favor, forneça um ID diferente.';
             $_SESSION['messageClass'] = 'error';
             header("Location: ../../Forms/esportes.php");
             exit();
         }
 
-        // Insere os dados no banco com os novos nomes de placar
-        $stmt = $conn->prepare("INSERT INTO esportes (nome_completo, cpf, id_conta_reals, 
-            placar_primeiro_jogo, placar_segundo_jogo, placar_terceiro_jogo) 
-            VALUES (:nome, :cpf, :codigo, :placar_primeiro_jogo, :placar_segundo_jogo, :placar_terceiro_jogo)");
+        $stmt = $conn->prepare("INSERT INTO esportes (nome_completo, cpf, cpf_hash, id_conta_reals, placar_primeiro_jogo, placar_segundo_jogo, placar_terceiro_jogo) 
+            VALUES (:nome, :cpf, :cpf_hash, :codigo, :placar_primeiro_jogo, :placar_segundo_jogo, :placar_terceiro_jogo)");
 
-        $stmt->bindParam(':nome', $nome_completo);
-        $stmt->bindParam(':cpf', $cpf_encrypted);
-        $stmt->bindParam(':codigo', $codigo);
-        $stmt->bindParam(':placar_primeiro_jogo', $placar_primeiro_jogo);
-        $stmt->bindParam(':placar_segundo_jogo', $placar_segundo_jogo);
-        $stmt->bindParam(':placar_terceiro_jogo', $placar_terceiro_jogo);
+        $params = [
+            ':nome' => $nome_completo,
+            ':cpf' => $cpf_encrypted,
+            ':cpf_hash' => $cpf_hashed,
+            ':codigo' => $codigo,
+            ':placar_primeiro_jogo' => $placares[0],
+            ':placar_segundo_jogo' => $placares[1],
+            ':placar_terceiro_jogo' => $placares[2]
+        ];
 
-        if ($stmt->execute()) {
+        if ($stmt->execute($params)) {
             $_SESSION['message'] = 'Formulário enviado com sucesso!';
             $_SESSION['messageClass'] = 'success';
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         } else {
             $_SESSION['message'] = 'Ocorreu um erro ao enviar o formulário. Tente novamente.';
             $_SESSION['messageClass'] = 'error';
