@@ -1,90 +1,97 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
+// Inicia a sessão
+if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
 // Verifica se o usuário está autenticado
 if (!isset($_SESSION['email'])) {
+    // Redireciona para a página de login
     header("Location: login.php");
     exit();
 }
 
-// Definindo a chave de criptografia
-$secret_key = 'sua_chave_super_secreta'; // NÃO armazene isso diretamente no código em produção!
-date_default_timezone_set('America/Sao_Paulo'); // Ajuste para o fuso desejado
+// Inclui o arquivo de conexão
+require_once __DIR__ . '/../../back-php/conexao.php'; // Ajuste o caminho conforme necessário
+
+// Função para carregar variáveis do arquivo .env
+function load_env($file) {
+    if (file_exists($file)) {
+        $lines = file($file);
+        foreach ($lines as $line) {
+            // Remove comentários e espaços em branco
+            $line = trim($line);
+            if (strpos($line, '#') === 0 || empty($line)) {
+                continue;
+            }
+            // Divide a linha em chave e valor
+            list($key, $value) = explode('=', $line, 2);
+            $key = trim($key);
+            $value = trim($value);
+            // Define a variável de ambiente
+            putenv("$key=$value");
+        }
+    }
+}
+
+// Carrega as variáveis do .env
+load_env(__DIR__ . '/keys/SECRET_KEY.env');
+
+// Obtém a chave secreta do ambiente
+$secret_key = getenv('SECRET_KEY');
 
 // Função para descriptografar os dados
-function decrypt_data($data, $key)
-{
-    // Verifica se os dados estão no formato esperado
-    $data = base64_decode($data);
-    if ($data === false) {
-        return null; // Retorna nulo se a decodificação falhar
-    }
-    
-    $parts = explode('::', $data);
-    
-    // Verifica se a divisão resultou em duas partes
-    if (count($parts) !== 2) {
-        return null; // Retorna nulo se não houver duas partes
-    }
-
-    list($encrypted_data, $iv) = $parts;
-    
+function decrypt_data($data, $key) {
+    list($encrypted_data, $iv) = explode('::', base64_decode($data), 2);
     return openssl_decrypt($encrypted_data, 'aes-256-cbc', $key, 0, $iv);
 }
 
-// Inclui o arquivo de conexão
-include_once(__DIR__ . '/../../back-php/conexao.php');
+// Define o fuso horário para São Paulo
+date_default_timezone_set('America/Sao_Paulo');
 
 try {
+    // Conexão com o banco de dados
     $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Consulta para selecionar os dados da tabela 'premiacao'
-    $stmt = $conn->prepare("SELECT nome, email, whatsapp, tempo_mercado, site_apostas, faturamento_medio, faturamento_maximo, created_at FROM premiacao");
+    $sql = "SELECT nome, email, cpf, codigo, created_at FROM premiacao"; // Ajuste a tabela conforme necessário
+    $stmt = $conn->prepare($sql);
     $stmt->execute();
 
-    // Obtém os resultados
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Inicializa um array para os dados descriptografados
-    $decrypted_data = [];
-
-    // Descriptografa os dados
-    foreach ($results as $row) {
-        $decrypted_data[] = [
-            'nome' => decrypt_data($row['nome'], $secret_key) ?? 'Erro na descriptografia',
-            'email' => decrypt_data($row['email'], $secret_key) ?? 'Erro na descriptografia',
-            'whatsapp' => decrypt_data($row['whatsapp'], $secret_key) ?? 'Erro na descriptografia',
-            'tempo_mercado' => decrypt_data($row['tempo_mercado'], $secret_key) ?? 'Erro na descriptografia',
-            'site_apostas' => $row['site_apostas'], // Supondo que não precise de descriptografia
-            'faturamento_medio' => $row['faturamento_medio'], // Supondo que não precise de descriptografia
-            'faturamento_maximo' => $row['faturamento_maximo'], // Supondo que não precise de descriptografia
-            'created_at' => (new DateTime($row['created_at'], new DateTimeZone('UTC')))
-                ->setTimezone(new DateTimeZone('America/Sao_Paulo'))
-                ->format('Y-m-d H:i:s'), // Formata para o padrão desejado
-        ];
-    }
-
-    // Para exportar como CSV
+    // Define o cabeçalho do arquivo CSV
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="usuarios_premiacao.csv"');
 
+    // Abre a saída para escrita
     $output = fopen('php://output', 'w');
-    fputcsv($output, ['Nome', 'Email', 'Whatsapp', 'Tempo de Mercado', 'Site de Apostas', 'Faturamento Médio', 'Faturamento Máximo', 'Data/Hora'], ';'); // Cabeçalhos do CSV
 
-    foreach ($decrypted_data as $data) {
-        fputcsv($output, $data, ';'); // Usando ponto e vírgula como delimitador
+    // Escreve o BOM para UTF-8
+    fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+    // Escreve o cabeçalho do CSV
+    fputcsv($output, ['Nome', 'Email', 'CPF', 'Código', 'Data/Hora'], ';'); // Usando ponto e vírgula como delimitador
+
+    // Escreve os dados no CSV
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        // Descriptografa os dados antes de exportar
+        $row['email'] = decrypt_data($row['email'], $secret_key);
+        $row['cpf'] = decrypt_data($row['cpf'], $secret_key);
+        $row['codigo'] = $row['codigo']; // Código não precisa de descriptografia
+
+        // Se os dados estão em UTC, converta para o horário de São Paulo
+        $dateTime = new DateTime($row['created_at'], new DateTimeZone('UTC'));
+        $dateTime->setTimezone(new DateTimeZone('America/Sao_Paulo'));
+        $row['created_at'] = $dateTime->format('d/m/Y H:i:s');
+
+        // Escreve a linha no CSV
+        fputcsv($output, $row, ';'); // Usando ponto e vírgula como delimitador
     }
 
+    // Fecha a conexão e o output
     fclose($output);
-    exit(); // Importante para evitar que o restante da página seja enviado
-
-} catch (PDOException $e) {
-    $_SESSION['message'] = 'Ocorreu um erro ao acessar os dados.';
-    $_SESSION['messageClass'] = 'error';
-    header("Location: ../../Forms/ticket.php");
     exit();
+} catch (PDOException $e) {
+    echo "Erro ao exportar dados: " . $e->getMessage();
 }
 ?>

@@ -9,13 +9,54 @@ if (session_status() == PHP_SESSION_NONE) {
 
 // Inclui o arquivo de conexão
 require_once __DIR__ . '/../../back-php/conexao.php';
+// Função para carregar variáveis do arquivo .env
+function load_env($file) {
+    if (file_exists($file)) {
+        $lines = file($file);
+        foreach ($lines as $line) {
+            // Remove comentários e espaços em branco
+            $line = trim($line);
+            if (strpos($line, '#') === 0 || empty($line)) {
+                continue;
+            }
+            // Divide a linha em chave e valor
+            list($key, $value) = explode('=', $line, 2);
+            $key = trim($key);
+            $value = trim($value);
+            // Define a variável de ambiente
+            putenv("$key=$value");
+        }
+    }
+}
+
+// Carrega as variáveis do .env
+load_env(__DIR__ . '/keys/SECRET_KEY.env');
+
+// Obtém a chave secreta do ambiente
+$secret_key = getenv('SECRET_KEY');
 
 // Função para descriptografar o CPF
-function decrypt_data($data)
+
+function decrypt_data($data, $key)
 {
-    list($encrypted_data, $iv) = explode('::', base64_decode($data), 2);
-    return openssl_decrypt($encrypted_data, 'AES-256-CBC', 'sua_chave_super_secreta', 0, $iv); // Usando a mesma chave secreta e método
+    // Verifica se os dados estão no formato esperado
+    $data = base64_decode($data);
+    if ($data === false) {
+        return null; // Retorna nulo se a decodificação falhar
+    }
+    
+    $parts = explode('::', $data);
+    
+    // Verifica se a divisão resultou em duas partes
+    if (count($parts) !== 2) {
+        return null; // Retorna nulo se não houver duas partes
+    }
+
+    list($encrypted_data, $iv) = $parts;
+    
+    return openssl_decrypt($encrypted_data, 'aes-256-cbc', $key, 0, $iv);
 }
+
 
 try {
     // Conexão com o banco de dados

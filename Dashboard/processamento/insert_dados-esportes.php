@@ -1,11 +1,37 @@
 <?php
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Regenera o token CSRF se não existir
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
+// Função para carregar variáveis do arquivo .env
+function load_env($file) {
+    if (file_exists($file)) {
+        $lines = file($file);
+        foreach ($lines as $line) {
+            // Remove comentários e espaços em branco
+            $line = trim($line);
+            if (strpos($line, '#') === 0 || empty($line)) {
+                continue;
+            }
+            // Divide a linha em chave e valor
+            list($key, $value) = explode('=', $line, 2);
+            $key = trim($key);
+            $value = trim($value);
+            // Define a variável de ambiente
+            putenv("$key=$value");
+        }
+    }
+}
+
+// Carrega as variáveis do .env
+load_env(__DIR__ . '/keys/SECRET_KEY.env');
+
+// Obtém a chave secreta do ambiente
 $secret_key = getenv('SECRET_KEY');
 
 function encrypt_cpf($cpf, $key) {

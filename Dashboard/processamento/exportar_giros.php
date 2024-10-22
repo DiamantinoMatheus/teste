@@ -1,6 +1,6 @@
 <?php
 // Inicia a sessão
-if (!session_id()) {
+if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
@@ -14,8 +14,31 @@ if (!isset($_SESSION['email'])) {
 // Inclui o arquivo de conexão
 require_once __DIR__ . '/../../back-php/conexao.php'; // Ajuste o caminho conforme necessário
 
-// Chave de criptografia (mantenha isso seguro, use uma variável de ambiente)
-$secret_key = 'sua_chave_super_secreta'; // NÃO armazene isso diretamente no código em produção!
+// Função para carregar variáveis do arquivo .env
+function load_env($file) {
+    if (file_exists($file)) {
+        $lines = file($file);
+        foreach ($lines as $line) {
+            // Remove comentários e espaços em branco
+            $line = trim($line);
+            if (strpos($line, '#') === 0 || empty($line)) {
+                continue;
+            }
+            // Divide a linha em chave e valor
+            list($key, $value) = explode('=', $line, 2);
+            $key = trim($key);
+            $value = trim($value);
+            // Define a variável de ambiente
+            putenv("$key=$value");
+        }
+    }
+}
+
+// Carrega as variáveis do .env
+load_env(__DIR__ . '/keys/SECRET_KEY.env');
+
+// Obtém a chave secreta do ambiente
+$secret_key = getenv('SECRET_KEY');
 
 // Função para descriptografar o e-mail (igual à que criamos anteriormente)
 function decrypt_email($encrypted_email, $key) {
