@@ -88,6 +88,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
+        
+        // Adicionando um delay de 1 segundo antes de enviar os dados para o banco
+        sleep(1); 
+
         // Insere os dados no banco
         $stmt = $conn->prepare("INSERT INTO premiacao (nome, email, email_hash, codigo, cpf, cpf_hash) VALUES (:nome, :email, :email_hash, :codigo, :cpf, :cpf_hash)");
         $stmt->execute([

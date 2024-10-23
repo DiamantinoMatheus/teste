@@ -108,6 +108,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
+        // Adicionando um delay de 1 segundo antes de enviar os dados para o banco
+        sleep(1); 
+
         $stmt = $conn->prepare("INSERT INTO esportes (nome_completo, cpf, cpf_hash, id_conta_reals, placar_primeiro_jogo, placar_segundo_jogo, placar_terceiro_jogo) 
             VALUES (:nome, :cpf, :cpf_hash, :codigo, :placar_primeiro_jogo, :placar_segundo_jogo, :placar_terceiro_jogo)");
 

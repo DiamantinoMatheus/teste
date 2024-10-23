@@ -66,6 +66,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: ../../Forms/ticket.php");
             exit();
         }
+        
+        // Adicionando um delay de 1 segundo antes de enviar os dados para o banco
+        sleep(1); 
 
         // Inserindo os dados criptografados no banco de dados
         $stmt = $conn->prepare("INSERT INTO ticket (rg, nome, endereco, instagram) VALUES (:rg, :nome, :endereco, :instagram)");

@@ -78,6 +78,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
+        
+        // Adicionando um delay de 1 segundo antes de enviar os dados para o banco
+        sleep(1); 
+
         // Insere os dados no banco
         $stmt = $conn->prepare("INSERT INTO giros (nome, email, email_hash, codigo) VALUES (:nome, :email, :email_hash, :codigo)");
         $stmt->execute([':nome' => $nome, ':email' => $email_encrypted, ':email_hash' => $email_hashed, ':codigo' => $codigo]);
