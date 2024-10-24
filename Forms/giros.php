@@ -74,7 +74,7 @@ try {
         <p>Acesse "MENU" ➜ "CARTEIRA/PERFIL" ➜ DIGITE <strong><em>SOMENTE OS NÚMEROS</em></strong> DA ID QUE APARECER</p>
         <div class="imagens">' . $imagem . '</div>
         <div class="form-group foto">
-            <input type="text" id="codigo" name="codigo" placeholder="Digite seu ID aqui" 
+            <input type="text" id="codigo" name="codigo" placeholder="Digite o seu ID aqui" 
                 value="' . (isset($codigo) ? htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') : '') . '">
         </div>
                 <!-- Adiciona o widget do reCAPTCHA -->
@@ -88,7 +88,6 @@ try {
     
     <!-- Adiciona o script do reCAPTCHA -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-   
 ';
 
             // Processamento do formulário

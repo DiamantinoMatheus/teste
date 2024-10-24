@@ -85,7 +85,7 @@ try {
                     ' . $imagem . '
                     </div>
                     <div class="form-group foto">
-                        <input type="text" id="codigo" name="codigo" placeholder="Digite seu ID aqui" 
+                        <input type="text" id="codigo" name="codigo" placeholder="Digite o seu ID aqui" 
                             value="' . (isset($codigo) ? htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') : '') . '">
                     </div>
 
