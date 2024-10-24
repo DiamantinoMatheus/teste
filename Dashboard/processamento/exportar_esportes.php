@@ -1,14 +1,19 @@
 <?php
-// Define o fuso horário para o horário de Brasília
-date_default_timezone_set('America/Sao_Paulo');
-
 // Inicia a sessão
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+// Verifica se o usuário está autenticado
+if (!isset($_SESSION['email'])) {
+    // Redireciona para a página de login
+    header("Location: login.php");
+    exit();
+}
+
 // Inclui o arquivo de conexão
-require_once __DIR__ . '/../../back-php/conexao.php';
+require_once __DIR__ . '/../../back-php/conexao.php'; // Ajuste o caminho conforme necessário
+
 // Função para carregar variáveis do arquivo .env
 function load_env($file) {
     if (file_exists($file)) {
@@ -35,28 +40,14 @@ load_env(__DIR__ . '/keys/SECRET_KEY.env');
 // Obtém a chave secreta do ambiente
 $secret_key = getenv('SECRET_KEY');
 
-// Função para descriptografar o CPF
-
-function decrypt_data($data, $key)
-{
-    // Verifica se os dados estão no formato esperado
-    $data = base64_decode($data);
-    if ($data === false) {
-        return null; // Retorna nulo se a decodificação falhar
-    }
-    
-    $parts = explode('::', $data);
-    
-    // Verifica se a divisão resultou em duas partes
-    if (count($parts) !== 2) {
-        return null; // Retorna nulo se não houver duas partes
-    }
-
-    list($encrypted_data, $iv) = $parts;
-    
+// Função para descriptografar os dados
+function decrypt_data($data, $key) {
+    list($encrypted_data, $iv) = explode('::', base64_decode($data), 2);
     return openssl_decrypt($encrypted_data, 'aes-256-cbc', $key, 0, $iv);
 }
 
+// Define o fuso horário para São Paulo
+date_default_timezone_set('America/Sao_Paulo');
 
 try {
     // Conexão com o banco de dados
@@ -64,12 +55,7 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Consulta para selecionar os dados da tabela 'esportes'
-    // Ajuste o horário para o fuso de São Paulo (UTC-3) caso o horário esteja em UTC no banco de dados
-    $sql = "SELECT nome_completo, cpf, id_conta_reals, placar_primeiro_jogo,
-            placar_segundo_jogo, placar_terceiro_jogo, 
-            DATE_FORMAT(CONVERT_TZ(created_at, '+00:00', '-03:00'), '%Y-%m-%d %H:%i:%s') as created_at 
-            FROM esportes";
-
+    $sql = "SELECT nome_completo, cpf, id_conta_reals, placar_primeiro_jogo, placar_segundo_jogo, placar_terceiro_jogo, placar_quarto_jogo, created_at FROM esportes";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
 
@@ -80,22 +66,24 @@ try {
     // Abre a saída para escrita
     $output = fopen('php://output', 'w');
 
-    // Escreve o BOM para UTF-8 (caso necessário para compatibilidade de encoding)
+    // Escreve o BOM para UTF-8
     fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
     // Escreve o cabeçalho do CSV
-    fputcsv($output, ['Nome', 'CPF', 'ID Reals', 'Placar Primeiro Jogo', 'Placar Segundo Jogo', 'Placar Terceiro Jogo', 'Data/Hora'], ';');
+    fputcsv($output, ['Nome Completo', 'CPF', 'ID Conta Reals', 'Placar 1º Jogo', 'Placar 2º Jogo', 'Placar 3º Jogo','Placar 4º Jogo', 'Data/Hora'], ';'); // Usando ponto e vírgula como delimitador
 
     // Escreve os dados no CSV
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        // Descriptografa o CPF antes de escrever no CSV
-        $row['cpf'] = decrypt_data(trim($row['cpf'])); // Remove espaços extras no CPF
+        // Descriptografa o CPF antes de exportar
+        $row['cpf'] = decrypt_data($row['cpf'], $secret_key);
 
-        // Remove espaços em branco extras nas bordas de cada dado
-        $row = array_map('trim', $row);
+        // Se os dados estão em UTC, converte para o horário de São Paulo
+        $dateTime = new DateTime($row['created_at'], new DateTimeZone('UTC'));
+        $dateTime->setTimezone(new DateTimeZone('America/Sao_Paulo'));
+        $row['created_at'] = $dateTime->format('d/m/Y H:i:s');
 
         // Escreve a linha no CSV
-        fputcsv($output, $row, ';');
+        fputcsv($output, $row, ';'); // Usando ponto e vírgula como delimitador
     }
 
     // Fecha a conexão e o output

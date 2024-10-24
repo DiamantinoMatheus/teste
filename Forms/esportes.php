@@ -74,21 +74,27 @@ try {
                 </div>
 
                 <div class="form-group">
-                    <h4> Celta de Vigo x Real Madrid - 19/10 </h4>
+                    <h4> Palmeiras x Fortaleza - 26/10 </h4>
                     <input type="text" id="primeiro_jogo" name="primeiro_jogo" placeholder="Placar exato - Exemplo placar 2x5" 
                         value="' . (isset($primeiro_jogo) ? htmlspecialchars($primeiro_jogo, ENT_QUOTES, 'UTF-8') : '') . '" 
                     oninput="mascaraPlacar(this)" maxlength="3" pattern="\d+x\d+" required>
                 </div>
                 <div class="form-group">
-                    <h4>Internacional x Grêmio - 19/10</h4>
+                    <h4> Vitória x Fluminense - 26/10 </h4>
                     <input type="text" id="segundo_jogo" name="segundo_jogo" placeholder="Placar exato - Exemplo placar 3x1" 
                         value="' . (isset($segundo_jogo) ? htmlspecialchars($segundo_jogo, ENT_QUOTES, 'UTF-8') : '') . '" 
                         oninput="mascaraPlacar(this)" maxlength="3" pattern="\d+x\d+" required>
                 </div>
                 <div class="form-group">
-                    <h4>Vasco da gama x Atlético Mineiro - 19/10</h4>
+                    <h4> Real Madrid x Barcelona - 26/10 </h4>
                     <input type="text" id="terceiro_jogo" name="terceiro_jogo" placeholder="Placar exato - Exemplo placar 4x4" 
                         value="' . (isset($terceiro_jogo) ? htmlspecialchars($terceiro_jogo, ENT_QUOTES, 'UTF-8') : '') . '" 
+                        oninput="mascaraPlacar(this)" maxlength="3" pattern="\d+x\d+" required>
+                </div>
+                <div class="form-group">
+                    <h4> Internacional x Atlético Mineiro - 26/10 </h4>
+                    <input type="text" id="quarto_jogo" name="quarto_jogo" placeholder="Placar exato - Exemplo placar 4x4" 
+                        value="' . (isset($quarto_jogo) ? htmlspecialchars($quarto_jogo, ENT_QUOTES, 'UTF-8') : '') . '" 
                         oninput="mascaraPlacar(this)" maxlength="3" pattern="\d+x\d+" required>
                 </div>
 

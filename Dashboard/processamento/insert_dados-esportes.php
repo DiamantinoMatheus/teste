@@ -35,15 +35,13 @@ load_env(__DIR__ . '/keys/SECRET_KEY.env');
 $secret_key = getenv('SECRET_KEY');
 
 function encrypt_cpf($cpf, $key) {
-    $salt = openssl_random_pseudo_bytes(16);
     $iv = openssl_random_pseudo_bytes(16);
-    return base64_encode(openssl_encrypt($cpf, 'aes-256-cbc', $key . $salt, 0, $iv) . '::' . base64_encode($iv) . '::' . base64_encode($salt));
+    return base64_encode(openssl_encrypt($cpf, 'aes-256-cbc', $key, 0, $iv) . '::' . $iv);
 }
 
 function hash_cpf($cpf) {
     return hash('sha256', $cpf);
 }
-
 function validar_cpf($cpf) {
     $cpf = preg_replace('/[^0-9]/', '', $cpf);
     if (strlen($cpf) != 11 || preg_match('/(\d)\1{10}/', $cpf)) return false;
@@ -66,11 +64,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $nome_completo = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $cpf = filter_input(INPUT_POST, 'cpf', FILTER_SANITIZE_STRING);
-    $codigo = str_replace(' ', '', filter_input(INPUT_POST, 'codigo', FILTER_SANITIZE_STRING));
+    $cpf = filter_input(INPUT_POST, 'cpf', FILTER_SANITIZE_SPECIAL_CHARS);
+    $codigo = str_replace(' ', '', filter_input(INPUT_POST, 'codigo', FILTER_SANITIZE_SPECIAL_CHARS));
     $placares = array_map(function($field) {
         return filter_input(INPUT_POST, $field, FILTER_SANITIZE_SPECIAL_CHARS);
-    }, ['primeiro_jogo', 'segundo_jogo', 'terceiro_jogo']);
+    }, ['primeiro_jogo', 'segundo_jogo', 'terceiro_jogo', 'quarto_jogo']);
 
     if (!validar_cpf($cpf) || !$nome_completo || !$codigo || in_array('', $placares)) {
         $_SESSION['message'] = 'Dados inválidos. Por favor, preencha todos os campos corretamente.';
@@ -111,8 +109,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Adicionando um delay de 1 segundo antes de enviar os dados para o banco
         sleep(1); 
 
-        $stmt = $conn->prepare("INSERT INTO esportes (nome_completo, cpf, cpf_hash, id_conta_reals, placar_primeiro_jogo, placar_segundo_jogo, placar_terceiro_jogo) 
-            VALUES (:nome, :cpf, :cpf_hash, :codigo, :placar_primeiro_jogo, :placar_segundo_jogo, :placar_terceiro_jogo)");
+        $stmt = $conn->prepare("INSERT INTO esportes (nome_completo, cpf, cpf_hash, id_conta_reals, placar_primeiro_jogo, placar_segundo_jogo, placar_terceiro_jogo, placar_quarto_jogo) 
+            VALUES (:nome, :cpf, :cpf_hash, :codigo, :placar_primeiro_jogo, :placar_segundo_jogo, :placar_terceiro_jogo, :placar_quarto_jogo)");
 
         $params = [
             ':nome' => $nome_completo,
@@ -121,7 +119,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ':codigo' => $codigo,
             ':placar_primeiro_jogo' => $placares[0],
             ':placar_segundo_jogo' => $placares[1],
-            ':placar_terceiro_jogo' => $placares[2]
+            ':placar_terceiro_jogo' => $placares[2],
+            ':placar_quarto_jogo' => $placares[3]
         ];
 
         if ($stmt->execute($params)) {
