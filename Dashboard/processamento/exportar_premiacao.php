@@ -55,7 +55,7 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Consulta para selecionar os dados da tabela 'premiacao'
-    $sql = "SELECT nome, email, cpf, codigo, created_at FROM premiacao"; // Ajuste a tabela conforme necessário
+    $sql = "SELECT nome, email, cpf, instagram, codigo, created_at FROM premiacao"; // Ajuste a tabela conforme necessário
     $stmt = $conn->prepare($sql);
     $stmt->execute();
 
@@ -70,13 +70,14 @@ try {
     fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
     // Escreve o cabeçalho do CSV
-    fputcsv($output, ['Nome', 'Email', 'CPF', 'Código', 'Data/Hora'], ';'); // Usando ponto e vírgula como delimitador
+    fputcsv($output, ['Nome', 'Email', 'CPF', 'Código', 'Instagram' ,'Data/Hora'], ';'); // Usando ponto e vírgula como delimitador
 
     // Escreve os dados no CSV
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         // Descriptografa os dados antes de exportar
         $row['email'] = decrypt_data($row['email'], $secret_key);
         $row['cpf'] = decrypt_data($row['cpf'], $secret_key);
+        $row['instagram'] = decrypt_data($row['instagram'], $secret_key);
         $row['codigo'] = $row['codigo']; // Código não precisa de descriptografia
 
         // Se os dados estão em UTC, converta para o horário de São Paulo

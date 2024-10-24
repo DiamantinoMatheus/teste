@@ -44,6 +44,7 @@ function validar_cpf($cpf) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Verificação do token CSRF
     if (empty($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $_SESSION['message'] = 'Erro: Token CSRF inválido.';
         $_SESSION['messageClass'] = 'error';
@@ -55,8 +56,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     $codigo = str_replace(' ', '', filter_input(INPUT_POST, 'codigo', FILTER_SANITIZE_SPECIAL_CHARS));
     $cpf = filter_input(INPUT_POST, 'cpf', FILTER_SANITIZE_SPECIAL_CHARS);
+    $instagram = filter_input(INPUT_POST, 'instagram', FILTER_SANITIZE_SPECIAL_CHARS); // Novo campo
 
-    if (!$nome || !$email || !$codigo || !validar_cpf($cpf)) {
+    // Verificação se os campos estão corretos
+    if (!$nome || !$email || !$codigo || !$instagram || !validar_cpf($cpf)) {
         $_SESSION['message'] = 'Dados inválidos. Por favor, preencha todos os campos corretamente.';
         $_SESSION['messageClass'] = 'error';
         header("Location: ../../Forms/premiadas.php");
@@ -69,10 +72,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $conn = new PDO("mysql:host=$hostname;dbname=$database", $username, $password);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+        // Criptografa e faz hash dos dados
         $email_encrypted = encrypt_email($email, $secret_key);
         $email_hashed = hash_email($email);
-        $cpf_encrypted = encrypt_email($cpf, $secret_key); // Você pode criar uma função específica para CPF, se preferir
-        $cpf_hashed = hash_email($cpf); // Utilize hash_email também para o CPF
+        $cpf_encrypted = encrypt_email($cpf, $secret_key);
+        $cpf_hashed = hash_email($cpf);
+        $instagram_encrypted = encrypt_email($instagram, $secret_key); // Criptografa o Instagram
 
         // Verifica se o e-mail ou CPF já foram utilizados
         $checkStmt = $conn->prepare("
@@ -88,19 +93,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
-        
         // Adicionando um delay de 1 segundo antes de enviar os dados para o banco
-        sleep(1); 
+        sleep(1);
 
         // Insere os dados no banco
-        $stmt = $conn->prepare("INSERT INTO premiacao (nome, email, email_hash, codigo, cpf, cpf_hash) VALUES (:nome, :email, :email_hash, :codigo, :cpf, :cpf_hash)");
+        $stmt = $conn->prepare("INSERT INTO premiacao (nome, email, email_hash, codigo, cpf, cpf_hash, instagram) VALUES (:nome, :email, :email_hash, :codigo, :cpf, :cpf_hash, :instagram)");
         $stmt->execute([
             ':nome' => $nome,
             ':email' => $email_encrypted,
             ':email_hash' => $email_hashed,
             ':codigo' => $codigo,
             ':cpf' => $cpf_encrypted,
-            ':cpf_hash' => $cpf_hashed
+            ':cpf_hash' => $cpf_hashed,
+            ':instagram' => $instagram_encrypted // Insere o Instagram criptografado
         ]);
 
         $_SESSION['message'] = $stmt->rowCount() ? 'Formulário enviado com sucesso!' : 'Ocorreu um erro ao enviar o formulário. Tente novamente.';
@@ -113,4 +118,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header("Location: ../../Forms/premiadas.php");
     exit();
 }
-?>

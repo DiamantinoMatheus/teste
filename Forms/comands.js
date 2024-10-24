@@ -204,13 +204,29 @@ function setupFormListeners() {
 
 setupFormListeners(); // Chama a função para configurar os ouvintes
 
+let debounceTimeout;
+
 function handleSubmit() {
     const recaptchaResponse = grecaptcha.getResponse(); // Obtém a resposta do reCAPTCHA
+    const submitBtn = document.getElementById("submitBtn");
 
+    // Verifica se o reCAPTCHA foi completado
     if (!recaptchaResponse) {
         alert("Por favor, complete o CAPTCHA.");
         return false; // Impede o envio do formulário
     }
+
+    // Verifica se a função de debounce está ativa
+    if (debounceTimeout) {
+        return false; // Se a função de debounce está ativa, impede o envio
+    }
+    
+    // Ativa a lógica de debounce
+    debounceTimeout = setTimeout(() => {
+        debounceTimeout = null; // Limpa o timeout após o intervalo
+    }, 2000); // Ajuste o tempo de debounce conforme necessário (2000 ms = 2 segundos)
+
+    submitBtn.disabled = true; // Desativa o botão ao enviar
 
     return true; // Permite o envio do formulário
 }

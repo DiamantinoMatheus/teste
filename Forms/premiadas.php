@@ -75,8 +75,12 @@ try {
                         maxlength="14" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}">
                     </div>
 
-                    <h1>ID DA SUA CONTA REALS - <strong class="regras"><em>SOMENTE OS NÚMEROS, NÃO COLOCAR "ID#"</em></strong></h1>
-                    <p>Acesse "MENU" ➜ "CARTEIRA/PERFIL" ➜ DIGITE <strong><em>SOMENTE OS NÚMEROS</em></strong> DA ID QUE APARECER</p>
+                    <div class="form-group">
+                        <input type="text" name="instagram" id="instagram" placeholder="Informe seu @ do Instagram" value="' . (isset($instagram) ? htmlspecialchars($instagram, ENT_QUOTES, 'UTF-8') : '') . '" maxlength="50">
+                    </div>
+
+                    <h1 style="text-align:center">ID DA SUA CONTA REALS - <strong class="regras"><em>SOMENTE OS NÚMEROS, NÃO COLOCAR "ID#"</em></strong></h1>
+                    <p style="text-align:center">Acesse "MENU" ➜ "CARTEIRA/PERFIL" ➜ DIGITE <strong><em>SOMENTE OS NÚMEROS</em></strong> DA ID QUE APARECER</p>
                     <div class="imagens">
                     ' . $imagem . '
                     </div>
