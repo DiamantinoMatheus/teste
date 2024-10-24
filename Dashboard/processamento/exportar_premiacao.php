@@ -70,7 +70,7 @@ try {
     fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
     // Escreve o cabeçalho do CSV
-    fputcsv($output, ['Nome', 'Email', 'CPF', 'Código', 'Instagram' ,'Data/Hora'], ';'); // Usando ponto e vírgula como delimitador
+    fputcsv($output, ['Nome', 'Email', 'CPF', 'Instagram', 'Código' ,'Data/Hora'], ';'); // Usando ponto e vírgula como delimitador
 
     // Escreve os dados no CSV
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
